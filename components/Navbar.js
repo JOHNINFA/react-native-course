@@ -6,7 +6,7 @@ const Navbar = () => {
     <View style={styles.header}>
       <TextInput
         style={styles.input}
-        placeholder="Buscar..."
+        placeholder="Buscarr..."
         placeholderTextColor="#888"
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.daysContainer}>
