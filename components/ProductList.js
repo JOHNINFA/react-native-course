@@ -67,7 +67,7 @@ const ProductList = () => {
         formData.append(productName, quantity);
       });
 
-      const response = await fetch('https://script.google.com/macros/s/AKfycbyYt1Z8mhR9p9EF21FeTZPuhCLA2m9QG57AqVd0Io_5xC-SyaeXow3UUFMYmi0wDR8DsQ/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbw8AAvZm5_yEY_tEna3JEu78SO-5qN976uB77JcNBM3D1LgpCRX4kSFPBswqB0NweTCoQ/exec', {
         method: 'POST',
         body: formData,
       });

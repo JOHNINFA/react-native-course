@@ -6,7 +6,7 @@ const LoginScreen = ({ onLogin }) => {
   const [password, setPassword] = useState('');
 
   const handleLogin = () => {
-    if (username === 'admin' && password === '123') {
+    if (username === 'Id1' && password === '123') {
       onLogin(true);
     } else {
       Alert.alert('Error', 'Nombre de usuario o contraseña incorrectos.');

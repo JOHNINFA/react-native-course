@@ -19,7 +19,7 @@ const App = () => {
           <Stack.Screen name="Login">
             {props => (
               <View style={styles.container}>
-                <ImageBackground source={require('./images/banner.png')} style={styles.background}>
+                <ImageBackground source={require('./images/banner.png')} style={styles.background} resizeMode="cover">
                   <LoginScreen {...props} onLogin={setIsLoggedIn} />
                 </ImageBackground>
               </View>
