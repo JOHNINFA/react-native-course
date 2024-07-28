@@ -1,13 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet } from 'react-native';
-import ProductList from './components/ProductList';
 import Navbar from './components/Navbar';
+import ProductList from './components/ProductList';
 
 const MainScreen = () => {
+  const [selectedDay, setSelectedDay] = useState(null);
+
   return (
     <View style={styles.container}>
-      <Navbar />
-      <ProductList />
+      <Navbar selectedDay={selectedDay} onDaySelected={setSelectedDay} />
+      <ProductList selectedDay={selectedDay} />
     </View>
   );
 };
@@ -15,6 +17,7 @@ const MainScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
   },
 });
 

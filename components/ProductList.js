@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, View, ActivityIndicator } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
 import Product from './Product'; // Ruta correcta a Product.js
 import productos from './Productos'; // Ajusta la ruta a productos.js y asegúrate del nombre
 
@@ -44,7 +44,7 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
-const ProductList = () => {
+const ProductList = ({ selectedDay }) => {
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(false);
 
@@ -89,15 +89,19 @@ const ProductList = () => {
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
+      {!selectedDay && (
+        <Text style={styles.alertText}>Por favor, seleccione un día para ingresar cantidades.</Text>
+      )}
       {orderOfProducts.map((productName, index) => (
         <Product
           key={index}
           product={productos[index]} // Ajusta según tu estructura de productos y asegúrate de pasar el objeto completo
           quantity={quantities[productName] || '0'}
           onQuantityChange={handleQuantityChange}
+          editable={!!selectedDay} // Deshabilitar el campo si no se ha seleccionado un día
         />
       ))}
-      <TouchableOpacity onPress={handleSendPress} style={styles.sendButton} disabled={loading}>
+      <TouchableOpacity onPress={handleSendPress} style={styles.sendButton} disabled={loading || !selectedDay}>
         {loading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (
@@ -112,6 +116,11 @@ const styles = StyleSheet.create({
   container: {
     padding: 20,
     backgroundColor: '#fff',
+  },
+  alertText: {
+    color: 'red',
+    textAlign: 'center',
+    marginBottom: 20,
   },
   sendButton: {
     marginTop: 20,

@@ -40,13 +40,13 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    width: '100%', // Asegura que la imagen de fondo cubra toda la pantalla
+    width: '100%',
     height: '100%',
   },
   container: {
     width: '80%',
     padding: 20,
-    backgroundColor: 'rgba(255, 255, 255, 0.1)', // Fondo semitransparente
+    backgroundColor: 'rgba(255, 255, 255, 0.1)',
     marginTop: 130,
     borderRadius: 10,
   },

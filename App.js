@@ -4,6 +4,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import LoginScreen from './LoginScreen';
 import MainScreen from './MainScreen';
+import OptionsScreen from './components/OptionsScreen';
 
 const Stack = createStackNavigator();
 
@@ -14,13 +15,16 @@ const App = () => {
     <NavigationContainer>
       <Stack.Navigator screenOptions={{ headerShown: false }}>
         {isLoggedIn ? (
-          <Stack.Screen name="Main" component={MainScreen} />
+          <>
+            <Stack.Screen name="Options" component={OptionsScreen} />
+            <Stack.Screen name="Main" component={MainScreen} />
+          </>
         ) : (
           <Stack.Screen name="Login">
             {props => (
               <View style={styles.container}>
                 <ImageBackground source={require('./images/banner.png')} style={styles.background} resizeMode="cover">
-                  <LoginScreen {...props} onLogin={setIsLoggedIn} />
+                  <LoginScreen {...props} onLogin={() => setIsLoggedIn(true)} />
                 </ImageBackground>
               </View>
             )}
