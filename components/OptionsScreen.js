@@ -1,3 +1,4 @@
+// components/OptionsScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
@@ -7,10 +8,10 @@ const OptionsScreen = ({ navigation }) => {
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Main')}>
         <Text style={styles.optionText}>Sugeridos</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Cargue')}>
         <Text style={styles.optionText}>Cargue</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.option}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Devoluciones')}>
         <Text style={styles.optionText}>Devoluciones</Text>
       </TouchableOpacity>
     </View>
