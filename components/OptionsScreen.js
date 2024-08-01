@@ -9,10 +9,10 @@ const OptionsScreen = ({ navigation }) => {
         <Text style={styles.optionText}>Sugeridos</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Cargue')}>
-        <Text style={styles.optionText}>Cargue</Text>
+        <Text style={styles.optionText}>Despachos</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Devoluciones')}>
-        <Text style={styles.optionText}>Devoluciones</Text>
+        <Text style={styles.optionText}>Rendimientos</Text>
       </TouchableOpacity>
     </View>
   );
