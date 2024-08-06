@@ -1,12 +1,12 @@
-// components/Cargue.js
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 const Cargue = () => {
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
+  const [loading, setLoading] = useState(true);
 
   const productos = [
     "AREPA TIPO OBLEA",
@@ -50,17 +50,30 @@ const Cargue = () => {
   ];
 
   useEffect(() => {
-    // Inicializar cantidades y checkedItems para cada producto
-    const initialQuantities = productos.reduce((acc, producto) => {
-      acc[producto] = '0';
-      return acc;
-    }, {});
-    const initialCheckedItems = productos.reduce((acc, producto) => {
-      acc[producto] = { V: false, D: false };
-      return acc;
-    }, {});
-    setQuantities(initialQuantities);
-    setCheckedItems(initialCheckedItems);
+    const fetchData = async () => {
+      try {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxpaAP2BX7BzNekb_ZEFo-0F0-8fSJV8oEU5gCOZRJ53IXU_jjIahB7vbPsgFNw3jVT/exec');
+        const data = await response.json();
+
+        const initialQuantities = data.reduce((acc, { product, quantity }) => {
+          acc[product] = quantity || '0';
+          return acc;
+        }, {});
+        setQuantities(initialQuantities);
+
+        const initialCheckedItems = productos.reduce((acc, product) => {
+          acc[product] = { V: false, D: false };
+          return acc;
+        }, {});
+        setCheckedItems(initialCheckedItems);
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
   }, []);
 
   const handleCheckChange = useCallback((productName, type) => {
@@ -71,7 +84,7 @@ const Cargue = () => {
         [type]: !prevCheckedItems[productName][type],
       }
     }));
-    Vibration.vibrate(50); // Agregar vibración
+    Vibration.vibrate(50);
   }, []);
 
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
@@ -119,11 +132,15 @@ const Cargue = () => {
         <Text style={[styles.title, styles.titleQuantity]}>CANTIDAD</Text>
         <Text style={[styles.title, styles.titleProduct]}>PRODUCTO</Text>
       </View>
-      <FlatList
-        data={productos}
-        keyExtractor={(item) => item}
-        renderItem={renderProduct}
-      />
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          data={productos}
+          keyExtractor={(item) => item}
+          renderItem={renderProduct}
+        />
+      )}
     </View>
   );
 };
@@ -153,14 +170,14 @@ const styles = StyleSheet.create({
     borderColor: '#ddd',
     marginTop: 30,
     elevation: 2,
-    shadowColor: '#000', // Añadido para efecto de sombra en iOS
-    shadowOffset: { width: 0, height: 2 }, // Añadido para efecto de sombra en iOS
-    shadowOpacity: 0.1, // Añadido para efecto de sombra en iOS
-    shadowRadius: 2, // Añadido para efecto de sombra en iOS
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
   },
   selectedDayButton: {
     backgroundColor: '#F0F0F0',
-    elevation: 3, // Mayor elevación para el botón seleccionado
+    elevation: 3,
     shadowOpacity: 0.3,
   },
   dayText: {
@@ -238,10 +255,10 @@ const styles = StyleSheet.create({
   },
   checkbox: {
     width: 19,
-    height: 21,
-    borderRadius: 2,
-    padding: 0,
-    margin: 0,
+    height: 19,
+    borderColor: '#66b3ff',
+    borderWidth: 1,
+    marginRight: 5,
   },
 });
 
