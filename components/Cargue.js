@@ -127,7 +127,7 @@ const Cargue = () => {
         </ScrollView>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, styles.titleCheckbox]}>V</Text>
+        <Text style={[styles.title, styles.titleCheckbox]}> V</Text>
         <Text style={[styles.title, styles.titleCheckbox]}>D</Text>
         <Text style={[styles.title, styles.titleQuantity]}>CANTIDAD</Text>
         <Text style={[styles.title, styles.titleProduct]}>PRODUCTO</Text>
@@ -210,7 +210,8 @@ const styles = StyleSheet.create({
   },
   titleQuantity: {
     flex: 1,
-    textAlign: 'center',
+    marginRight:  13,
+    
   },
   titleProduct: {
     flex: 2,
@@ -242,6 +243,7 @@ const styles = StyleSheet.create({
     width: '20%',
   },
   quantity: {
+    
     fontSize: 12,
     fontWeight: '900',
     textAlign: 'center',
@@ -252,13 +254,16 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     color: '#808080',
+   
+    marginLeft:7,
   },
   checkbox: {
     width: 19,
-    height: 19,
+    height: 23,
+    padding: 1,
     borderColor: '#66b3ff',
-    borderWidth: 1,
-    marginRight: 5,
+    
+    marginRight: 7,
   },
 });
 
