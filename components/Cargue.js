@@ -52,19 +52,20 @@ const Cargue = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbxpaAP2BX7BzNekb_ZEFo-0F0-8fSJV8oEU5gCOZRJ53IXU_jjIahB7vbPsgFNw3jVT/exec');
+        const response = await fetch('https://script.google.com/macros/s/AKfycbw-oUohStpAZAmVLJNBMcWReIboB_U_h_NawC5sEWgBcv5C83NUliF2OhMdHDjt9HJGkA/exec');
         const data = await response.json();
 
         const initialQuantities = data.reduce((acc, { product, quantity }) => {
           acc[product] = quantity || '0';
           return acc;
         }, {});
-        setQuantities(initialQuantities);
 
-        const initialCheckedItems = productos.reduce((acc, product) => {
-          acc[product] = { V: false, D: false };
+        const initialCheckedItems = data.reduce((acc, { product, checked }) => {
+          acc[product] = { D: checked || false, V: false };  // `V` es la columna `C`, y `D` inicialmente en `false`
           return acc;
         }, {});
+
+        setQuantities(initialQuantities);
         setCheckedItems(initialCheckedItems);
       } catch (error) {
         console.error('Error fetching data:', error);
@@ -127,23 +128,25 @@ const Cargue = () => {
         </ScrollView>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, styles.titleCheckbox]}> V</Text>
+        <Text style={[styles.title, styles.titleCheckbox]}>V</Text>
         <Text style={[styles.title, styles.titleCheckbox]}>D</Text>
-        <Text style={[styles.title, styles.titleQuantity]}>CANTIDAD</Text>
-        <Text style={[styles.title, styles.titleProduct]}>PRODUCTO</Text>
+        <Text style={[styles.title, styles.titleQuantity]}>Cantidades</Text>
+        <Text style={styles.title}>Producto</Text>
       </View>
       {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#033468" />
       ) : (
         <FlatList
           data={productos}
-          keyExtractor={(item) => item}
+          keyExtractor={item => item}
           renderItem={renderProduct}
+          contentContainerStyle={styles.listContent}
         />
       )}
     </View>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {
