@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 
 const Cargue = () => {
@@ -52,16 +52,21 @@ const Cargue = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await fetch('https://script.google.com/macros/s/AKfycbw-oUohStpAZAmVLJNBMcWReIboB_U_h_NawC5sEWgBcv5C83NUliF2OhMdHDjt9HJGkA/exec');
+        const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec');
         const data = await response.json();
 
-        const initialQuantities = data.reduce((acc, { product, quantity }) => {
-          acc[product] = quantity || '0';
+        const initialQuantities = productos.reduce((acc, product) => {
+          const foundProduct = data.find(p => p.product === product);
+          acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
           return acc;
         }, {});
 
-        const initialCheckedItems = data.reduce((acc, { product, checked }) => {
-          acc[product] = { D: checked || false, V: false };  // `V` es la columna `C`, y `D` inicialmente en `false`
+        const initialCheckedItems = productos.reduce((acc, product) => {
+          const foundProduct = data.find(p => p.product === product);
+          acc[product] = {
+            D: foundProduct ? foundProduct.checked || false : false,
+            V: false
+          };
           return acc;
         }, {});
 
@@ -77,16 +82,72 @@ const Cargue = () => {
     fetchData();
   }, []);
 
-  const handleCheckChange = useCallback((productName, type) => {
-    setCheckedItems(prevCheckedItems => ({
-      ...prevCheckedItems,
+  const handleCheckChange = useCallback(async (productName, type) => {
+    const newCheckedItems = {
+      ...checkedItems,
       [productName]: {
-        ...prevCheckedItems[productName],
-        [type]: !prevCheckedItems[productName][type],
+        ...checkedItems[productName],
+        [type]: !checkedItems[productName][type],
       }
-    }));
+    };
+
+    setCheckedItems(newCheckedItems);
     Vibration.vibrate(50);
-  }, []);
+
+    if (type === 'V') {
+      try {
+        const dataToSend = [
+          {
+            product: productName,
+            checked: !checkedItems[productName]?.V // Enviar el estado invertido de la casilla "V"
+          }
+        ];
+
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxkYfepyL6g0-kXdhDrhKUVKFnsvdkpVcapSrJX8evyrrKZz7UEykzcYTPoaeQiySPWTw/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        });
+
+        if (!response.ok) {
+          Alert.alert('Error', 'Hubo un problema al guardar los datos.');
+        }
+      } catch (error) {
+        console.error('Error al enviar datos en handleCheckChange:', error);
+        Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+      }
+    }
+  }, [checkedItems]);
+
+  const handleSave = async () => {
+    try {
+      const dataToSend = Object.entries(checkedItems)
+        .filter(([productName, states]) => states.V === true) // Solo enviar los productos que están marcados
+        .map(([productName, states]) => ({
+          product: productName,
+          checked: states.V // Enviar el estado del checkbox 'V'
+        }));
+
+      const response = await fetch('https://script.google.com/macros/s/AKfycby0vmsqIxyW9U-VjCnrt6XA0RTTJHQ0_FDsQafb0t7Ss8UIGmTb9ZkzNm3ykCoedqWIPA/exec', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (response.ok) {
+        Alert.alert('Éxito', 'Datos guardados correctamente.');
+      } else {
+        Alert.alert('Error', 'Hubo un problema al guardar los datos.');
+      }
+    } catch (error) {
+      console.error('Error al enviar datos en handleSave:', error);
+      Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+    }
+  };
 
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
@@ -143,10 +204,12 @@ const Cargue = () => {
           contentContainerStyle={styles.listContent}
         />
       )}
+      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+        <Text style={styles.saveButtonText}>Guardar</Text>
+      </TouchableOpacity>
     </View>
   );
 };
-
 
 const styles = StyleSheet.create({
   container: {
@@ -213,8 +276,7 @@ const styles = StyleSheet.create({
   },
   titleQuantity: {
     flex: 1,
-    marginRight:  13,
-    
+    marginRight: 13,
   },
   titleProduct: {
     flex: 2,
@@ -246,7 +308,6 @@ const styles = StyleSheet.create({
     width: '20%',
   },
   quantity: {
-    
     fontSize: 12,
     fontWeight: '900',
     textAlign: 'center',
@@ -257,16 +318,26 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     width: '100%',
     color: '#808080',
-   
-    marginLeft:7,
+    marginLeft: 7,
   },
   checkbox: {
     width: 19,
     height: 23,
     padding: 1,
     borderColor: '#66b3ff',
-    
     marginRight: 7,
+  },
+  saveButton: {
+    backgroundColor: '#28a745',
+    paddingVertical: 15,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  saveButtonText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

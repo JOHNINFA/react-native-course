@@ -67,7 +67,7 @@ const ProductList = ({ selectedDay }) => {
         formData.append(productName, quantity);
       });
 
-      const response = await fetch('https://script.google.com/macros/s/AKfycbw-oUohStpAZAmVLJNBMcWReIboB_U_h_NawC5sEWgBcv5C83NUliF2OhMdHDjt9HJGkA/exec', {
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec', {
         method: 'POST',
         body: formData,
       });
