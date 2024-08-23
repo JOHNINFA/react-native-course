@@ -1,6 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator, Alert } from 'react-native';
 import { CheckBox } from 'react-native-elements';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const Cargue = () => {
   const [selectedDay, setSelectedDay] = useState('Lunes');
@@ -9,6 +10,7 @@ const Cargue = () => {
   const [loading, setLoading] = useState(true);
 
   const productos = [
+    // Lista de productos
     "AREPA TIPO OBLEA",
     "AREPA MEDIANA",
     "AREPA TIPO PINCHO",
@@ -52,26 +54,39 @@ const Cargue = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
+        // Primero, carga el estado guardado
+        const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
+        const storedQuantities = await AsyncStorage.getItem('quantities');
+
+        const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
+        const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
+
+        setCheckedItems(initialCheckedItems);
+        setQuantities(initialQuantities);
+
+        // Luego, carga los datos del servidor
         const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec');
         const data = await response.json();
 
-        const initialQuantities = productos.reduce((acc, product) => {
+        const updatedQuantities = productos.reduce((acc, product) => {
           const foundProduct = data.find(p => p.product === product);
           acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
           return acc;
         }, {});
 
-        const initialCheckedItems = productos.reduce((acc, product) => {
+        setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
+
+        const updatedCheckedItems = productos.reduce((acc, product) => {
           const foundProduct = data.find(p => p.product === product);
           acc[product] = {
             D: foundProduct ? foundProduct.checked || false : false,
-            V: false
+            V: initialCheckedItems[product]?.V || false
           };
           return acc;
         }, {});
 
-        setQuantities(initialQuantities);
-        setCheckedItems(initialCheckedItems);
+        setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
+
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -96,6 +111,9 @@ const Cargue = () => {
 
     if (type === 'V') {
       try {
+        // Guardar estado en AsyncStorage
+        await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
+
         const dataToSend = [
           {
             product: productName,
@@ -121,31 +139,36 @@ const Cargue = () => {
     }
   }, [checkedItems]);
 
-  const handleSave = async () => {
+  const handleReload = async () => {
+    setLoading(true);
     try {
-      const dataToSend = Object.entries(checkedItems)
-        .filter(([productName, states]) => states.V === true) // Solo enviar los productos que están marcados
-        .map(([productName, states]) => ({
-          product: productName,
-          checked: states.V // Enviar el estado del checkbox 'V'
-        }));
+      // Actualizar datos desde el servidor
+      const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec');
+      const data = await response.json();
 
-      const response = await fetch('https://script.google.com/macros/s/AKfycby0vmsqIxyW9U-VjCnrt6XA0RTTJHQ0_FDsQafb0t7Ss8UIGmTb9ZkzNm3ykCoedqWIPA/exec', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(dataToSend),
-      });
+      const updatedQuantities = productos.reduce((acc, product) => {
+        const foundProduct = data.find(p => p.product === product);
+        acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
+        return acc;
+      }, {});
 
-      if (response.ok) {
-        Alert.alert('Éxito', 'Datos guardados correctamente.');
-      } else {
-        Alert.alert('Error', 'Hubo un problema al guardar los datos.');
-      }
+      setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
+
+      const updatedCheckedItems = productos.reduce((acc, product) => {
+        const foundProduct = data.find(p => p.product === product);
+        acc[product] = {
+          D: foundProduct ? foundProduct.checked || false : false,
+          V: checkedItems[product]?.V || false
+        };
+        return acc;
+      }, {});
+
+      setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
+
     } catch (error) {
-      console.error('Error al enviar datos en handleSave:', error);
-      Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+      console.error('Error fetching data during reload:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -163,6 +186,7 @@ const Cargue = () => {
         checked={checkedItems[item]?.D}
         onPress={() => handleCheckChange(item, 'D')}
         containerStyle={styles.checkbox}
+        disabled
       />
       <View style={styles.inputContainer}>
         <Text style={styles.quantity}>{quantities[item] || '0'}</Text>
@@ -204,8 +228,8 @@ const Cargue = () => {
           contentContainerStyle={styles.listContent}
         />
       )}
-      <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
-        <Text style={styles.saveButtonText}>Guardar</Text>
+      <TouchableOpacity style={styles.reloadButton} onPress={handleReload}>
+        <Text style={styles.reloadButtonText}>Recargar</Text>
       </TouchableOpacity>
     </View>
   );
@@ -293,11 +317,12 @@ const styles = StyleSheet.create({
     borderColor: '#66b3ff',
     borderWidth: 1,
     borderRadius: 10,
-    padding: 7,
-    width: '60%',
+    padding: 6,
+    height:'100%',
+    
   },
   description: {
-    fontSize: 11,
+    fontSize: 10.5,
     fontWeight: '900',
     color: '#808080',
   },
@@ -327,18 +352,19 @@ const styles = StyleSheet.create({
     borderColor: '#66b3ff',
     marginRight: 7,
   },
-  saveButton: {
+  reloadButton: {
     backgroundColor: '#28a745',
-    paddingVertical: 15,
+    paddingVertical: 12,
     borderRadius: 10,
     alignItems: 'center',
     marginTop: 10,
   },
-  saveButtonText: {
+  reloadButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
   },
+  
 });
 
 export default Cargue;
