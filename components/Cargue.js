@@ -10,7 +10,6 @@ const Cargue = () => {
   const [loading, setLoading] = useState(true);
 
   const productos = [
-    // Lista de productos
     "AREPA TIPO OBLEA",
     "AREPA MEDIANA",
     "AREPA TIPO PINCHO",
@@ -87,6 +86,42 @@ const Cargue = () => {
 
         setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
 
+        // Verificar y desmarcar checkboxes si todas las cantidades son 0
+        const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
+        if (allQuantitiesZero) {
+          const resetCheckedItems = productos.reduce((acc, product) => {
+            acc[product] = {
+              D: checkedItems[product]?.D || false,
+              V: false, // Desmarcar checkbox V
+            };
+            return acc;
+          }, {});
+
+          setCheckedItems(resetCheckedItems);
+          await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
+
+          // Enviar estado false al servidor para los productos con cantidades en 0
+          const dataToSend = productos.map(product => ({
+            product,
+            checked: false // Establecer estado a false
+          }));
+
+          const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(dataToSend),
+          });
+
+          if (!response.ok) {
+            Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
+          }
+        }
+
+        // Guardar estado actualizado en AsyncStorage
+        await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
+
       } catch (error) {
         console.error('Error fetching data:', error);
       } finally {
@@ -120,8 +155,6 @@ const Cargue = () => {
             checked: newCheckedItems[productName]?.V // Enviar el estado actual de la casilla "V"
           }
         ];
-        // log de envio
-       // console.log('Datos enviados:', JSON.stringify(dataToSend));
 
         const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
           method: 'POST',
@@ -167,8 +200,40 @@ const Cargue = () => {
 
       setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
 
+      // Verificar y desmarcar checkboxes si todas las cantidades son 0
+      const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
+      if (allQuantitiesZero) {
+        const resetCheckedItems = productos.reduce((acc, product) => {
+          acc[product] = {
+            D: checkedItems[product]?.D || false,
+            V: false, // Desmarcar checkbox V
+          };
+          return acc;
+        }, {});
+
+        setCheckedItems(resetCheckedItems);
+        await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
+
+        // Enviar estado false al servidor para los productos con cantidades en 0
+        const dataToSend = productos.map(product => ({
+          product,
+          checked: false // Establecer estado a false
+        }));
+
+        const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        });
+
+        if (!response.ok) {
+          Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
+        }
+      }
+
       // Guardar estado actualizado en AsyncStorage
-      await AsyncStorage.setItem('checkedItems', JSON.stringify(updatedCheckedItems));
       await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
 
     } catch (error) {
