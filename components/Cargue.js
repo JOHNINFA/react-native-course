@@ -64,7 +64,7 @@ const Cargue = () => {
         setQuantities(initialQuantities);
 
         // Luego, carga los datos del servidor
-        const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec');
+        const response = await fetch('https://script.google.com/macros/s/AKfycbx_deSF4M2f20mkMSAVdczW_BKD1peqyHixHh2una9VhlyygJl1SwcGz7UxioKOXzApRQ/exec');
         const data = await response.json();
 
         const updatedQuantities = productos.reduce((acc, product) => {
@@ -106,7 +106,7 @@ const Cargue = () => {
             checked: false // Establecer estado a false
           }));
 
-          const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
+          const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -156,7 +156,7 @@ const Cargue = () => {
           }
         ];
 
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -178,7 +178,7 @@ const Cargue = () => {
     setLoading(true);
     try {
       // Actualizar datos desde el servidor
-      const response = await fetch('https://script.google.com/macros/s/AKfycbwKTX9dJZlO97w_D9FHBW2q60X_WMjgthihTsXK416R3OHM0WNm7ryVndaZLAhRwGbh-g/exec');
+      const response = await fetch('https://script.google.com/macros/s/AKfycbx_deSF4M2f20mkMSAVdczW_BKD1peqyHixHh2una9VhlyygJl1SwcGz7UxioKOXzApRQ/exec');
       const data = await response.json();
 
       const updatedQuantities = productos.reduce((acc, product) => {
@@ -220,14 +220,14 @@ const Cargue = () => {
           checked: false // Establecer estado a false
         }));
 
-        const response = await fetch('https://script.google.com/macros/s/AKfycbzPZqRP5_dyqLA1V0Mb_e8mPURPLyqIQ_x1Q8eXP3FuOpQY2E87FVNYm7QLzYX2ueQgXQ/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(dataToSend),
         });
-
+        https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec
         if (!response.ok) {
           Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }
