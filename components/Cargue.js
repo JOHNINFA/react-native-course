@@ -227,7 +227,7 @@ const Cargue = () => {
           },
           body: JSON.stringify(dataToSend),
         });
-        https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec
+       
         if (!response.ok) {
           Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }

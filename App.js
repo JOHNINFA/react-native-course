@@ -6,6 +6,7 @@ import LoginScreen from './LoginScreen';
 import MainScreen from './MainScreen';
 import OptionsScreen from './components/OptionsScreen';
 import Cargue from './components/Cargue';
+import Vencidas from './components/Vencidas';
 
 const Stack = createStackNavigator();
 
@@ -19,6 +20,7 @@ const App = () => {
           <Stack.Screen name="Options" component={OptionsScreen} />
           <Stack.Screen name="Main" component={MainScreen} />
           <Stack.Screen name="Cargue" component={Cargue} />
+          <Stack.Screen name="Vencidas" component={Vencidas} />
         </Stack.Navigator>
       ) : (
         <View style={styles.container}>
