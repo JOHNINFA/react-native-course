@@ -6,13 +6,13 @@ const OptionsScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Main')}>
-        <Text style={styles.optionText}>Sugeridos</Text>
+        <Text style={styles.optionText}>Sugerido</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Cargue')}>
-        <Text style={styles.optionText}>Despachos</Text>
+        <Text style={styles.optionText}>Despacho</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Vencidas')}>
-        <Text style={styles.optionText}>Rendimientos</Text>
+        <Text style={styles.optionText}>Rendimiento</Text>
       </TouchableOpacity>
     </View>
   );

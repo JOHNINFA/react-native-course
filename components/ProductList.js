@@ -3,6 +3,7 @@ import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicato
 import Product from './Product'; // Ruta correcta a Product.js
 import productos from './Productos'; // Ajusta la ruta a productos.js y asegúrate del nombre
 
+
 const orderOfProducts = [
   "AREPA TIPO OBLEA",
   "AREPA MEDIANA",

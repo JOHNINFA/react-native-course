@@ -3,6 +3,7 @@ import { View, StyleSheet } from 'react-native';
 import Navbar from './components/Navbar';
 import ProductList from './components/ProductList';
 
+
 const MainScreen = () => {
   const [selectedDay, setSelectedDay] = useState(null);
 
@@ -10,6 +11,7 @@ const MainScreen = () => {
     <View style={styles.container}>
       <Navbar selectedDay={selectedDay} onDaySelected={setSelectedDay} />
       <ProductList selectedDay={selectedDay} />
+     
     </View>
   );
 };

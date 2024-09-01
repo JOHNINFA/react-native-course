@@ -49,7 +49,7 @@ const styles = StyleSheet.create({
     paddingVertical: 3,
     paddingHorizontal: 10,
     alignItems: 'center',
-    marginRight: 10,
+    marginRight: 17,
   },
   selectedDayButton: {
     backgroundColor: '#003d88',

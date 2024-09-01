@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { ScrollView, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
+import Navbar from './Navbar'; // Importa el componente Navbar
 
 const orderOfProducts = [
   "AREPA TIPO OBLEA",
@@ -42,105 +43,74 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
-const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
-
 const Vencidas = () => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [quantities, setQuantities] = useState({});
 
+  const renderItem = ({ item }) => (
+    <View style={styles.productContainer}>
+      <TouchableOpacity style={styles.productButton}>
+        <Text style={styles.productName}>{item}</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.quantityButton}>
+        <Text style={styles.quantityText}>
+          {quantities[item] || '0'}
+        </Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <ScrollView contentContainerStyle={styles.container}>
-      <View style={styles.navbar}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.daysContainer}>
-          {dias.map(dia => (
-            <TouchableOpacity 
-              key={dia} 
-              style={[styles.dayButton, selectedDay === dia && styles.selectedDayButton]} 
-              onPress={() => setSelectedDay(dia)}
-            >
-              <Text style={[styles.dayText, selectedDay === dia && styles.selectedDayText]}>{dia}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
+    <View style={styles.container}>
+      {/* Navbar con selección de días */}
+      <View style={styles.navbarWrapper}>
+        <Navbar selectedDay={selectedDay} onDaySelected={setSelectedDay} />
       </View>
 
-      {!selectedDay && (
-        <Text style={styles.alertText}>Por favor, seleccione un día para ingresar cantidades.</Text>
-      )}
-
-      {selectedDay && (
-        <View style={styles.productsContainer}>
-          <View style={styles.headerRow}>
-            <Text style={[styles.headerText, styles.productHeader]}>PRODUCTOS</Text>
-            <Text style={[styles.headerText, styles.quantityHeader]}>CANTIDAD</Text>
-          </View>
-          {orderOfProducts.map((productName, index) => (
-            <View key={index} style={styles.productContainer}>
-              <TouchableOpacity style={styles.productButton}>
-                <Text style={styles.productName}>{productName}</Text>
-              </TouchableOpacity>
-              <TouchableOpacity style={styles.quantityButton}>
-                <Text style={styles.quantityText}>
-                  {quantities[productName] || '0'}
-                </Text>
-              </TouchableOpacity>
-            </View>
-          ))}
+      <View style={styles.contentContainer}>
+        {/* Títulos de columnas fijos */}
+        <View style={styles.headerRow}>
+          <Text style={[styles.headerText, styles.productHeader]}>PRODUCTO</Text>
+          <Text style={[styles.headerText, styles.quantityHeader]}>VENCIDAS</Text>
         </View>
-      )}
-    </ScrollView>
+
+        {!selectedDay && (
+          <Text style={styles.alertText}>Por favor, seleccione un día para ingresar cantidades.</Text>
+        )}
+
+        {selectedDay && (
+          <FlatList
+            data={orderOfProducts}
+            renderItem={renderItem}
+            keyExtractor={(item) => item}
+            contentContainerStyle={styles.scrollViewContent}
+          />
+        )}
+      </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    padding: 20,
+    flex: 1,
     backgroundColor: '#f5f5f5', // Gris suave
   },
-  navbar: {
-    marginBottom: 20,
+  navbarWrapper: {
+    marginTop: 0, // Ajusta según la altura del Navbar
+    zIndex: 10, // Asegúrate de que esté por encima de otros elementos
   },
-  daysContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 10,
+  contentContainer: {
+    flex: 1,
+  
   },
-  dayButton: {
-    backgroundColor: 'white',
-    borderRadius: 8,
-    paddingVertical: 3,
-    paddingHorizontal: 10,
-    alignItems: 'center',
-    marginRight: 12,
-    borderWidth: 1,
-    borderColor: '#ddd',
-    marginTop: 30,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 2,
-  },
-  selectedDayButton: {
-    backgroundColor: '#F0F0F0',
-    elevation: 3,
-    shadowOpacity: 0.3,
-  },
-  dayText: {
-    fontSize: 14,
-    color: '#000',
-    fontWeight: 'bold',
-  },
-  selectedDayText: {
-    color: 'black',
+  scrollViewContent: {
+    padding: 20,
   },
   alertText: {
     color: 'red',
     textAlign: 'center',
     marginBottom: 20,
-  },
-  productsContainer: {
-    marginTop: 20,
   },
   headerRow: {
     flexDirection: 'row',
@@ -149,6 +119,7 @@ const styles = StyleSheet.create({
     borderBottomColor: '#ddd',
     paddingBottom: 5,
     marginBottom: 10,
+    backgroundColor: '#f5f5f5', // Igual al fondo de la pantalla
   },
   headerText: {
     fontSize: 13,
@@ -157,14 +128,12 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     textAlign: 'center',
     color:'#696969'
-    
   },
   productHeader: {
     width: '70%', // Ajustar el ancho de la columna de productos
   },
   quantityHeader: {
-    
-    width: '20%', // Ajustar el ancho de la columna de cantidad
+    width: '25%', // Ajustar el ancho de la columna de cantidad
   },
   productContainer: {
     flexDirection: 'row',
