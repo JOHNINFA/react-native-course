@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
 import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import Product from './Product'; // Ruta correcta a Product.js
-import productos from './Productos'; // Ajusta la ruta a productos.js y asegúrate del nombre
+import Product from './Product'; // Asegúrate de que este componente esté bien configurado
+import productos from './Productos'; // Verifica que esta sea la estructura correcta de los productos
 
-
+// Lista de productos en el orden deseado
 const orderOfProducts = [
   "AREPA TIPO OBLEA",
   "AREPA MEDIANA",
@@ -45,10 +45,11 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
-const ProductList = ({ selectedDay }) => {
-  const [quantities, setQuantities] = useState({});
-  const [loading, setLoading] = useState(false);
+const ProductList = ({ selectedDay, userId }) => {
+  const [quantities, setQuantities] = useState({}); // Guarda las cantidades
+  const [loading, setLoading] = useState(false); // Muestra el estado de carga
 
+  // Maneja el cambio de cantidad para cada producto
   const handleQuantityChange = (productName, quantity) => {
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -56,19 +57,24 @@ const ProductList = ({ selectedDay }) => {
     }));
   };
 
+  // Función para enviar los datos a Google Sheets
   const handleSendPress = async () => {
-    if (loading) return;
-    
+    if (loading) return; // Evita múltiples envíos si está en proceso
+
     setLoading(true);
     try {
       const formData = new FormData();
+      
+      formData.append('userId', userId); // Incluye el userId en el FormData
 
+      // Agrega cada producto y su cantidad al formData
       orderOfProducts.forEach(productName => {
         const quantity = quantities[productName] || '0';
         formData.append(productName, quantity);
       });
 
-      const response = await fetch('https://script.google.com/macros/s/AKfycbx_deSF4M2f20mkMSAVdczW_BKD1peqyHixHh2una9VhlyygJl1SwcGz7UxioKOXzApRQ/exec', {
+      // Petición POST a Google Apps Script
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`, {
         method: 'POST',
         body: formData,
       });
@@ -78,8 +84,7 @@ const ProductList = ({ selectedDay }) => {
       }
 
       Alert.alert('Éxito', '¡Cantidades enviadas exitosamente!');
-      // Limpiar cantidades después del envío exitoso
-      setQuantities({});
+      setQuantities({}); // Limpia las cantidades después de enviar
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Hubo un error al enviar las cantidades');
@@ -96,13 +101,17 @@ const ProductList = ({ selectedDay }) => {
       {orderOfProducts.map((productName, index) => (
         <Product
           key={index}
-          product={productos[index]} // Ajusta según tu estructura de productos y asegúrate de pasar el objeto completo
-          quantity={quantities[productName] || '0'}
-          onQuantityChange={handleQuantityChange}
-          editable={!!selectedDay} // Deshabilitar el campo si no se ha seleccionado un día
+          product={productos[index]} // Asegúrate de que este objeto esté en el orden correcto
+          quantity={quantities[productName] || '0'} // Usa la cantidad o '0' si no se ha ingresado
+          onQuantityChange={handleQuantityChange} // Maneja cambios de cantidad
+          editable={!!selectedDay} // Si no se selecciona día, deshabilita el campo
         />
       ))}
-      <TouchableOpacity onPress={handleSendPress} style={styles.sendButton} disabled={loading || !selectedDay}>
+      <TouchableOpacity
+        onPress={handleSendPress}
+        style={styles.sendButton}
+        disabled={loading || !selectedDay}
+      >
         {loading ? (
           <ActivityIndicator size="small" color="#fff" />
         ) : (

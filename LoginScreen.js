@@ -5,14 +5,22 @@ const LoginScreen = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
 
+  const users = {
+    'Id1': '123',
+    'Id2': '345',
+    'Id3': '456',
+    'Id4': '678',
+    'Id5': '890',
+    'Id6': '1029',
+  };
+
   const handleLogin = () => {
-    if (username === 'Id1' && password === '123') {
-      onLogin(true);
+    if (users[username] && users[username] === password) {
+      onLogin(true, username); // Pass the username to identify the user
     } else {
       Alert.alert('Error', 'Nombre de usuario o contraseña incorrectos.');
     }
   };
-
   return (
     <ImageBackground source={require('./images/banner.png')} style={styles.background}>
       <View style={styles.container}>

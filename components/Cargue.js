@@ -3,14 +3,14 @@ import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibrati
 import { CheckBox } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const Cargue = () => {
+const Cargue = ({ userId }) => {
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
   const [loading, setLoading] = useState(true);
 
   const productos = [
-    "AREPA TIPO OBLEA",
+   "AREPA TIPO OBLEA",
     "AREPA MEDIANA",
     "AREPA TIPO PINCHO",
     "AREPA CON QUESO - CORRIENTE",
@@ -23,52 +23,47 @@ const Cargue = () => {
     "AREPA DE CHOCLO CON QUESO PEQUEÑA",
     "AREPA BOYACENSE X5",
     "AREPA BOYACENSE X10",
-    "AREPA SANTANDEREANA",
-    "ALMOJÁBANAS X5",
-    "ALMOJÁBANAS X10",
+    "AREPA SANTADERANA",
+    "ALMOJABANAS X5",
+    "ALMOJABANAS X10",
     "AREPA CON SEMILLA DE QUINUA",
-    "AREPA CON SEMILLA DE CHÍA",
-    "AREPA CON SEMILLA DE AJONJOLÍ",
-    "AREPA CON SEMILLA DE LINAZA",
+    "AREPA CON SEMILLA DE CHIA",
+    "AREPA CON SEMILLA DE AJONJOLI",
+    "AREPA CON SEMILLA DE LINANZA",
     "AREPA CON SEMILLA DE GIRASOL",
     "AREPA CHORICERA",
-    "AREPA LONCHERÍA",
+    "AREPA LONCHERIA",
     "AREPA CON MARGARINA Y SAL",
     "YUCAREPA",
     "AREPA TIPO ASADERO X 10",
     "AREPA PARA RELLENAR # 1",
     "AREPA PARA RELLENAR #2",
     "AREPA PARA RELLENAR #3",
-    "PORCIÓN DE AREPAS X 2 UND",
-    "PORCIÓN DE AREPAS X 3 UND",
-    "PORCIÓN DE AREPAS X 4 UND",
-    "PORCIÓN DE AREPAS X 5 UND",
+    "PORCION DE AREPAS X 2 UND",
+    "PORCION DE AREPAS X 3 UND",
+    "PORCION DE AREPAS X 4 UND",
+    "PORCION DE AREPAS X 5 UND",
     "AREPA SUPER OBLEA",
     "LIBRAS DE MASA",
     "MUTE BOYACENSE",
-    "LIBRA DE MAÍZ PETO",
-    "ENVUELTO DE MAÍZ X 5 UND"
+    "LIBRA DE MAIZ PETO",
+    "ENVUELTO DE MAIZ X 5 UND"
   ];
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Primero, carga el estado guardado
         const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
         const storedQuantities = await AsyncStorage.getItem('quantities');
 
         const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
         const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
 
-        setCheckedItems(initialCheckedItems);
-        setQuantities(initialQuantities);
-
-        // Luego, carga los datos del servidor
-        const response = await fetch('https://script.google.com/macros/s/AKfycbx_deSF4M2f20mkMSAVdczW_BKD1peqyHixHh2una9VhlyygJl1SwcGz7UxioKOXzApRQ/exec');
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`);
         const data = await response.json();
 
         const updatedQuantities = productos.reduce((acc, product) => {
-          const foundProduct = data.find(p => p.product === product);
+          const foundProduct = data[product];
           acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
           return acc;
         }, {});
@@ -76,7 +71,7 @@ const Cargue = () => {
         setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
 
         const updatedCheckedItems = productos.reduce((acc, product) => {
-          const foundProduct = data.find(p => p.product === product);
+          const foundProduct = data[product];
           acc[product] = {
             D: foundProduct ? foundProduct.checked || false : false,
             V: initialCheckedItems[product]?.V || false
@@ -86,13 +81,12 @@ const Cargue = () => {
 
         setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
 
-        // Verificar y desmarcar checkboxes si todas las cantidades son 0
         const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
         if (allQuantitiesZero) {
           const resetCheckedItems = productos.reduce((acc, product) => {
             acc[product] = {
               D: checkedItems[product]?.D || false,
-              V: false, // Desmarcar checkbox V
+              V: false,
             };
             return acc;
           }, {});
@@ -100,13 +94,12 @@ const Cargue = () => {
           setCheckedItems(resetCheckedItems);
           await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
 
-          // Enviar estado false al servidor para los productos con cantidades en 0
           const dataToSend = productos.map(product => ({
             product,
-            checked: false // Establecer estado a false
+            checked: false
           }));
 
-          const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
+          const postResponse = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -114,12 +107,11 @@ const Cargue = () => {
             body: JSON.stringify(dataToSend),
           });
 
-          if (!response.ok) {
+          if (!postResponse.ok) {
             Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
           }
         }
 
-        // Guardar estado actualizado en AsyncStorage
         await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
 
       } catch (error) {
@@ -130,7 +122,7 @@ const Cargue = () => {
     };
 
     fetchData();
-  }, []);
+  }, [userId]);
 
   const handleCheckChange = useCallback(async (productName, type) => {
     const newCheckedItems = {
@@ -146,13 +138,12 @@ const Cargue = () => {
 
     if (type === 'V') {
       try {
-        // Guardar estado en AsyncStorage
         await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
 
         const dataToSend = [
           {
             product: productName,
-            checked: newCheckedItems[productName]?.V // Enviar el estado actual de la casilla "V"
+            checked: newCheckedItems[productName]?.V
           }
         ];
 
@@ -177,8 +168,7 @@ const Cargue = () => {
   const handleReload = async () => {
     setLoading(true);
     try {
-      // Actualizar datos desde el servidor
-      const response = await fetch('https://script.google.com/macros/s/AKfycbx_deSF4M2f20mkMSAVdczW_BKD1peqyHixHh2una9VhlyygJl1SwcGz7UxioKOXzApRQ/exec');
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`);
       const data = await response.json();
 
       const updatedQuantities = productos.reduce((acc, product) => {
@@ -200,13 +190,12 @@ const Cargue = () => {
 
       setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
 
-      // Verificar y desmarcar checkboxes si todas las cantidades son 0
       const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
       if (allQuantitiesZero) {
         const resetCheckedItems = productos.reduce((acc, product) => {
           acc[product] = {
             D: checkedItems[product]?.D || false,
-            V: false, // Desmarcar checkbox V
+            V: false,
           };
           return acc;
         }, {});
@@ -214,26 +203,24 @@ const Cargue = () => {
         setCheckedItems(resetCheckedItems);
         await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
 
-        // Enviar estado false al servidor para los productos con cantidades en 0
         const dataToSend = productos.map(product => ({
           product,
-          checked: false // Establecer estado a false
+          checked: false
         }));
 
-        const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
+        const postResponse = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(dataToSend),
         });
-       
-        if (!response.ok) {
+
+        if (!postResponse.ok) {
           Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }
       }
 
-      // Guardar estado actualizado en AsyncStorage
       await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
 
     } catch (error) {

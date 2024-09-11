@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
+
 import { ImageBackground, StyleSheet, View } from 'react-native';
 import LoginScreen from './LoginScreen';
 import MainScreen from './MainScreen';
@@ -12,26 +13,41 @@ const Stack = createStackNavigator();
 
 const App = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [userId, setUserId] = useState(null);
+
+  const handleLogin = (loggedIn, username) => {
+    setIsLoggedIn(loggedIn);
+    setUserId(username);
+  };
 
   return (
     <NavigationContainer>
       {isLoggedIn ? (
         <Stack.Navigator screenOptions={{ headerShown: false }}>
-          <Stack.Screen name="Options" component={OptionsScreen} />
-          <Stack.Screen name="Main" component={MainScreen} />
-          <Stack.Screen name="Cargue" component={Cargue} />
-          <Stack.Screen name="Vencidas" component={Vencidas} />
+          <Stack.Screen name="Options">
+            {(props) => <OptionsScreen {...props} userId={userId} />}
+          </Stack.Screen>
+          <Stack.Screen name="Main">
+            {(props) => <MainScreen {...props} userId={userId} />}
+          </Stack.Screen>
+          <Stack.Screen name="Cargue">
+            {(props) => <Cargue {...props} userId={userId} />}
+          </Stack.Screen>
+          <Stack.Screen name="Vencidas">
+            {(props) => <Vencidas {...props} userId={userId} />}
+          </Stack.Screen>
         </Stack.Navigator>
       ) : (
         <View style={styles.container}>
           <ImageBackground source={require('./images/banner.png')} style={styles.background} resizeMode="cover">
-            <LoginScreen onLogin={() => setIsLoggedIn(true)} />
+            <LoginScreen onLogin={handleLogin} />
           </ImageBackground>
         </View>
       )}
     </NavigationContainer>
   );
 };
+
 
 const styles = StyleSheet.create({
   container: {

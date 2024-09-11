@@ -1,17 +1,16 @@
-// components/OptionsScreen.js
 import React from 'react';
 import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
-const OptionsScreen = ({ navigation }) => {
+const OptionsScreen = ({ navigation, userId }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Main')}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Main', { userId })}>
         <Text style={styles.optionText}>Sugerido</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Cargue')}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Cargue', { userId })}>
         <Text style={styles.optionText}>Despacho</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Vencidas')}>
+      <TouchableOpacity style={styles.option} onPress={() => navigation.navigate('Vencidas', { userId })}>
         <Text style={styles.optionText}>Rendimiento</Text>
       </TouchableOpacity>
     </View>
