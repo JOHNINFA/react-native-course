@@ -51,6 +51,7 @@ const Cargue = ({ userId }) => {
   ];
 
   useEffect(() => {
+    console.log("userId:", userId);
     const fetchData = async () => {
       try {
         const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
@@ -59,8 +60,9 @@ const Cargue = ({ userId }) => {
         const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
         const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
 
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`);
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
         const data = await response.json();
+        console.log(data); 
 
         const updatedQuantities = productos.reduce((acc, product) => {
           const foundProduct = data[product];
@@ -99,7 +101,7 @@ const Cargue = ({ userId }) => {
             checked: false
           }));
 
-          const postResponse = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
+          const postResponse = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
@@ -147,7 +149,7 @@ const Cargue = ({ userId }) => {
           }
         ];
 
-        const response = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
+        const response = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -164,32 +166,36 @@ const Cargue = ({ userId }) => {
       }
     }
   }, [checkedItems]);
-
   const handleReload = async () => {
     setLoading(true);
     try {
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`);
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
       const data = await response.json();
-
+  
+      // Verifica que data no sea undefined
+      if (!data) {
+        throw new Error('No se recibieron datos');
+      }
+  
       const updatedQuantities = productos.reduce((acc, product) => {
-        const foundProduct = data.find(p => p.product === product);
+        const foundProduct = data[product]; // Acceso directo al objeto
         acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
         return acc;
       }, {});
-
-      setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
-
+  
+      setQuantities(updatedQuantities); // Ya no necesitas prevQuantities
+  
       const updatedCheckedItems = productos.reduce((acc, product) => {
-        const foundProduct = data.find(p => p.product === product);
+        const foundProduct = data[product]; // Acceso directo al objeto
         acc[product] = {
           D: foundProduct ? foundProduct.checked || false : false,
-          V: checkedItems[product]?.V || false
+          V: checkedItems[product]?.V || false,
         };
         return acc;
       }, {});
-
-      setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
-
+  
+      setCheckedItems(updatedCheckedItems); // Ya no necesitas prevCheckedItems
+  
       const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
       if (allQuantitiesZero) {
         const resetCheckedItems = productos.reduce((acc, product) => {
@@ -199,30 +205,30 @@ const Cargue = ({ userId }) => {
           };
           return acc;
         }, {});
-
+  
         setCheckedItems(resetCheckedItems);
         await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
-
+  
         const dataToSend = productos.map(product => ({
           product,
-          checked: false
+          checked: false,
         }));
-
-        const postResponse = await fetch('https://script.google.com/macros/s/AKfycbynyJKU6Wz716_kFO6ufThuaBqvMESj6y3xDgUGuCEHMuPSA-A5tic0auYmbUcHzD6EoA/exec', {
+  
+        const postResponse = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(dataToSend),
         });
-
+  
         if (!postResponse.ok) {
           Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }
       }
-
+  
       await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
-
+  
     } catch (error) {
       console.error('Error fetching data during reload:', error);
       Alert.alert('Error', 'Hubo un problema al recargar los datos.');
@@ -230,7 +236,7 @@ const Cargue = ({ userId }) => {
       setLoading(false);
     }
   };
-
+  
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   const renderProduct = ({ item }) => (

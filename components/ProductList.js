@@ -74,7 +74,7 @@ const ProductList = ({ selectedDay, userId }) => {
       });
 
       // Petición POST a Google Apps Script
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbxGmcCcBBs83SAt3rttQv5hIDIW0nSlmCRuStHXStco5Rd_pQLjAD9klAOgGjaiW5eacA/exec?userId=${userId}`, {
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`, {
         method: 'POST',
         body: formData,
       });
