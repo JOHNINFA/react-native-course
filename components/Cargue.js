@@ -50,80 +50,84 @@ const Cargue = ({ userId }) => {
     "ENVUELTO DE MAIZ X 5 UND"
   ];
 
-  useEffect(() => {
-    console.log("userId:", userId);
-    const fetchData = async () => {
-      try {
-        const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
-        const storedQuantities = await AsyncStorage.getItem('quantities');
+  const fetchData = async () => {
+    try {
+      const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
+      const storedQuantities = await AsyncStorage.getItem('quantities');
 
-        const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
-        const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
+      const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
+      const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
 
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
-        const data = await response.json();
-        console.log(data); 
+      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
+      const data = await response.json();
 
-        const updatedQuantities = productos.reduce((acc, product) => {
-          const foundProduct = data[product];
-          acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
-          return acc;
-        }, {});
+      const updatedQuantities = productos.reduce((acc, product) => {
+        const foundProduct = data[product];
+        acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
+        return acc;
+      }, {});
 
-        setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
+      setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
 
-        const updatedCheckedItems = productos.reduce((acc, product) => {
-          const foundProduct = data[product];
+      const updatedCheckedItems = productos.reduce((acc, product) => {
+        const foundProduct = data[product];
+        acc[product] = {
+          D: foundProduct ? foundProduct.checked || false : false,
+          V: initialCheckedItems[product]?.V || false
+        };
+        return acc;
+      }, {});
+
+      setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
+
+      const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
+      if (allQuantitiesZero) {
+        const resetCheckedItems = productos.reduce((acc, product) => {
           acc[product] = {
-            D: foundProduct ? foundProduct.checked || false : false,
-            V: initialCheckedItems[product]?.V || false
+            D: checkedItems[product]?.D || false,
+            V: false,
           };
           return acc;
         }, {});
 
-        setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
+        setCheckedItems(resetCheckedItems);
+        await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
 
-        const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
-        if (allQuantitiesZero) {
-          const resetCheckedItems = productos.reduce((acc, product) => {
-            acc[product] = {
-              D: checkedItems[product]?.D || false,
-              V: false,
-            };
-            return acc;
-          }, {});
+        const dataToSend = productos.map(product => ({
+          product,
+          checked: false
+        }));
 
-          setCheckedItems(resetCheckedItems);
-          await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
+        const postResponse = await fetch(`https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(dataToSend),
+        });
 
-          const dataToSend = productos.map(product => ({
-            product,
-            checked: false
-          }));
-
-          const postResponse = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(dataToSend),
-          });
-
-          if (!postResponse.ok) {
-            Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
-          }
+        if (!postResponse.ok) {
+          Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }
-
-        await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
-
-      } catch (error) {
-        console.error('Error fetching data:', error);
-      } finally {
-        setLoading(false);
       }
-    };
 
-    fetchData();
+      await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
+
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Fetch data on mount
+
+    const intervalId = setInterval(() => {
+      fetchData(); // Fetch data every 10 seconds
+    }, 10000);
+
+    return () => clearInterval(intervalId); // Clean up on unmount
   }, [userId]);
 
   const handleCheckChange = useCallback(async (productName, type) => {
@@ -134,6 +138,9 @@ const Cargue = ({ userId }) => {
         [type]: !checkedItems[productName][type],
       }
     };
+    console.log('Producto:', productName);
+    console.log('Nuevo estado del checkbox:', newCheckedItems[productName][type]);
+    console.log('ID del usuario:', userId);
 
     setCheckedItems(newCheckedItems);
     Vibration.vibrate(50);
@@ -149,7 +156,7 @@ const Cargue = ({ userId }) => {
           }
         ];
 
-        const response = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
+        const response = await fetch(`https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -166,77 +173,12 @@ const Cargue = ({ userId }) => {
       }
     }
   }, [checkedItems]);
+
   const handleReload = async () => {
     setLoading(true);
-    try {
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
-      const data = await response.json();
-  
-      // Verifica que data no sea undefined
-      if (!data) {
-        throw new Error('No se recibieron datos');
-      }
-  
-      const updatedQuantities = productos.reduce((acc, product) => {
-        const foundProduct = data[product]; // Acceso directo al objeto
-        acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
-        return acc;
-      }, {});
-  
-      setQuantities(updatedQuantities); // Ya no necesitas prevQuantities
-  
-      const updatedCheckedItems = productos.reduce((acc, product) => {
-        const foundProduct = data[product]; // Acceso directo al objeto
-        acc[product] = {
-          D: foundProduct ? foundProduct.checked || false : false,
-          V: checkedItems[product]?.V || false,
-        };
-        return acc;
-      }, {});
-  
-      setCheckedItems(updatedCheckedItems); // Ya no necesitas prevCheckedItems
-  
-      const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
-      if (allQuantitiesZero) {
-        const resetCheckedItems = productos.reduce((acc, product) => {
-          acc[product] = {
-            D: checkedItems[product]?.D || false,
-            V: false,
-          };
-          return acc;
-        }, {});
-  
-        setCheckedItems(resetCheckedItems);
-        await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
-  
-        const dataToSend = productos.map(product => ({
-          product,
-          checked: false,
-        }));
-  
-        const postResponse = await fetch('https://script.google.com/macros/s/AKfycbxJqmsO69qz35JKIyfd9UK5aXhLQA5p__9ui1Mts-YpcyygTQyCq0b9E2kN7khWwN876Q/exec', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        });
-  
-        if (!postResponse.ok) {
-          Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
-        }
-      }
-  
-      await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
-  
-    } catch (error) {
-      console.error('Error fetching data during reload:', error);
-      Alert.alert('Error', 'Hubo un problema al recargar los datos.');
-    } finally {
-      setLoading(false);
-    }
+    await fetchData(); // Re-fetch data on reload
   };
-  
+
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   const renderProduct = ({ item }) => (
