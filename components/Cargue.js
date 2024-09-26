@@ -50,6 +50,9 @@ const Cargue = ({ userId }) => {
     "ENVUELTO DE MAIZ X 5 UND"
   ];
 
+  const BASE_GET_URL = `https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`;
+  const BASE_POST_URL = `https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`;
+
   const fetchData = async () => {
     try {
       const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
@@ -58,7 +61,7 @@ const Cargue = ({ userId }) => {
       const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
       const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
 
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`);
+      const response = await fetch(BASE_GET_URL);
       const data = await response.json();
 
       const updatedQuantities = productos.reduce((acc, product) => {
@@ -98,7 +101,7 @@ const Cargue = ({ userId }) => {
           checked: false
         }));
 
-        const postResponse = await fetch(`https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`, {
+        const postResponse = await fetch(BASE_POST_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -156,7 +159,7 @@ const Cargue = ({ userId }) => {
           }
         ];
 
-        const response = await fetch(`https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`, {
+        const response = await fetch(BASE_POST_URL, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -241,7 +244,6 @@ const Cargue = ({ userId }) => {
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
