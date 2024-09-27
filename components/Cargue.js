@@ -1,13 +1,16 @@
-import React, { useState, useEffect, useCallback } from 'react';
-import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator, Alert } from 'react-native';
+import React, { useState, useEffect, useCallback,useRef } from 'react';
+import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator, Alert, Animated } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import debounce from 'lodash.debounce';
 
 const Cargue = ({ userId }) => {
   const [selectedDay, setSelectedDay] = useState('Lunes');
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
   const [loading, setLoading] = useState(true);
+
+  const scaleAnims = useRef({}).current;
 
   const productos = [
    "AREPA TIPO OBLEA",
@@ -55,23 +58,24 @@ const Cargue = ({ userId }) => {
 
   const fetchData = async () => {
     try {
-      const storedCheckedItems = await AsyncStorage.getItem('checkedItems');
-      const storedQuantities = await AsyncStorage.getItem('quantities');
-
+      // Usar claves que incluyan el userId
+      const storedCheckedItems = await AsyncStorage.getItem(`checkedItems_${userId}`);
+      const storedQuantities = await AsyncStorage.getItem(`quantities_${userId}`);
+  
       const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
       const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
-
+  
       const response = await fetch(BASE_GET_URL);
       const data = await response.json();
-
+  
       const updatedQuantities = productos.reduce((acc, product) => {
         const foundProduct = data[product];
         acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
         return acc;
       }, {});
-
+  
       setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
-
+  
       const updatedCheckedItems = productos.reduce((acc, product) => {
         const foundProduct = data[product];
         acc[product] = {
@@ -80,9 +84,9 @@ const Cargue = ({ userId }) => {
         };
         return acc;
       }, {});
-
+  
       setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
-
+  
       const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
       if (allQuantitiesZero) {
         const resetCheckedItems = productos.reduce((acc, product) => {
@@ -92,15 +96,15 @@ const Cargue = ({ userId }) => {
           };
           return acc;
         }, {});
-
+  
         setCheckedItems(resetCheckedItems);
-        await AsyncStorage.setItem('checkedItems', JSON.stringify(resetCheckedItems));
-
+        await AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(resetCheckedItems));
+  
         const dataToSend = productos.map(product => ({
           product,
           checked: false
         }));
-
+  
         const postResponse = await fetch(BASE_POST_URL, {
           method: 'POST',
           headers: {
@@ -108,105 +112,135 @@ const Cargue = ({ userId }) => {
           },
           body: JSON.stringify(dataToSend),
         });
-
+  
         if (!postResponse.ok) {
           Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
         }
       }
-
-      await AsyncStorage.setItem('quantities', JSON.stringify(updatedQuantities));
-
+  
+      // Guardar los nuevos datos usando el userId en la clave
+      await AsyncStorage.setItem(`quantities_${userId}`, JSON.stringify(updatedQuantities));
+  
     } catch (error) {
       console.error('Error fetching data:', error);
     } finally {
       setLoading(false);
     }
   };
+  
 
   useEffect(() => {
-    fetchData(); // Fetch data on mount
-
+    fetchData();
     const intervalId = setInterval(() => {
-      fetchData(); // Fetch data every 10 seconds
+      fetchData();
     }, 10000);
-
-    return () => clearInterval(intervalId); // Clean up on unmount
+    return () => clearInterval(intervalId);
   }, [userId]);
 
-  const handleCheckChange = useCallback(async (productName, type) => {
+  const syncDataToServer = async (newCheckedItems) => {
+    const dataToSend = Object.entries(newCheckedItems).map(([product, item]) => ({
+      product,
+      checked: item.V // Cambia esto según tu lógica
+    }));
+
+    try {
+      const response = await fetch(BASE_POST_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(dataToSend),
+      });
+
+      if (!response.ok) {
+        Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+      }
+    } catch (error) {
+      console.error('Error al enviar datos:', error);
+      Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+    }
+  };
+
+  const syncDataToServerDebounced = useCallback(debounce(syncDataToServer, 300), []);
+
+  const handleCheckChange = useCallback((productName, type) => {
+    if (type === 'V' && quantities[productName] === '0') {
+      Alert.alert('Atención', 'No puedes marcar este producto porque la cantidad es cero.');
+      return;
+    }
+  
+    if (!scaleAnims[productName]) {
+      scaleAnims[productName] = new Animated.Value(1);
+    }
+  
+    Animated.sequence([
+      Animated.timing(scaleAnims[productName], {
+        toValue: 1.1,
+        duration: 130,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnims[productName], {
+        toValue: 1,
+        duration: 150,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  
     const newCheckedItems = {
       ...checkedItems,
       [productName]: {
         ...checkedItems[productName],
-        [type]: !checkedItems[productName][type],
-      }
+        [type]: true,
+      },
     };
-    console.log('Producto:', productName);
-    console.log('Nuevo estado del checkbox:', newCheckedItems[productName][type]);
-    console.log('ID del usuario:', userId);
-
+  
     setCheckedItems(newCheckedItems);
     Vibration.vibrate(50);
-
-    if (type === 'V') {
-      try {
-        await AsyncStorage.setItem('checkedItems', JSON.stringify(newCheckedItems));
-
-        const dataToSend = [
-          {
-            product: productName,
-            checked: newCheckedItems[productName]?.V
-          }
-        ];
-
-        const response = await fetch(BASE_POST_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        });
-
-        if (!response.ok) {
-          Alert.alert('Error', 'Hubo un problema al guardar los datos.');
-        }
-      } catch (error) {
-        console.error('Error al enviar datos en handleCheckChange:', error);
-        Alert.alert('Error', 'Hubo un problema al enviar los datos.');
-      }
-    }
-  }, [checkedItems]);
+  
+    // Guardar en AsyncStorage usando userId como parte de la clave
+    AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(newCheckedItems));
+  
+    syncDataToServerDebounced(newCheckedItems);
+  }, [checkedItems, quantities]);
+  
 
   const handleReload = async () => {
     setLoading(true);
-    await fetchData(); // Re-fetch data on reload
+    await fetchData();
   };
-
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
-  const renderProduct = ({ item }) => (
-    <View style={styles.productContainer}>
-      <CheckBox
-        checked={checkedItems[item]?.V}
-        onPress={() => handleCheckChange(item, 'V')}
-        containerStyle={styles.checkbox}
-        checkedColor="#28a745"
-      />
-      <CheckBox
-        checked={checkedItems[item]?.D}
-        onPress={() => handleCheckChange(item, 'D')}
-        containerStyle={styles.checkbox}
-        disabled
-      />
-      <View style={styles.inputContainer}>
-        <Text style={styles.quantity}>{quantities[item] || '0'}</Text>
-      </View>
-      <View style={styles.descriptionContainer}>
-        <Text style={styles.description}>{item}</Text>
-      </View>
-    </View>
-  );
-
+  const renderProduct = ({ item }) => {
+    const scale = scaleAnims[item] || new Animated.Value(1);
+  
+    return (
+    
+        <View style={styles.productContainer}>
+        <Animated.View style={{ transform: [{ scale }] }} key={item}>
+          <CheckBox
+            checked={checkedItems[item]?.V}
+            onPress={() => handleCheckChange(item, 'V')}
+            containerStyle={styles.checkbox}
+            checkedColor="#28a745"
+          />
+          </Animated.View>
+          <CheckBox
+            checked={checkedItems[item]?.D}
+            onPress={() => handleCheckChange(item, 'D')}
+            containerStyle={styles.checkbox}
+            disabled
+          />
+          <View style={styles.inputContainer}>
+            <Text style={styles.quantity}>{quantities[item] || '0'}</Text>
+          </View>
+          <View style={styles.descriptionContainer}>
+            <Text style={styles.description}>{item}</Text>
+          </View>
+        </View>
+     
+    );
+  };
+  
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
