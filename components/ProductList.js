@@ -45,6 +45,21 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
+// Mapeo de URLs por día
+const getUrlByDay = (selectedDay, userId) => {
+  const urls = {
+    Lunes: `https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`,
+    Martes: `https://example.com/martes?userId=${userId}`,
+    Miércoles: `https://example.com/miercoles?userId=${userId}`,
+    Jueves: `https://example.com/jueves?userId=${userId}`,
+    Viernes: `https://example.com/viernes?userId=${userId}`,
+    Sábado: `https://example.com/sabado?userId=${userId}`,
+    Domingo: `https://example.com/domingo?userId=${userId}`,
+  };
+
+  return urls[selectedDay] || null; // Retorna la URL correspondiente al día o null si no coincide
+};
+
 const ProductList = ({ selectedDay, userId }) => {
   const [quantities, setQuantities] = useState({}); // Guarda las cantidades
   const [loading, setLoading] = useState(false); // Muestra el estado de carga
@@ -57,32 +72,39 @@ const ProductList = ({ selectedDay, userId }) => {
     }));
   };
 
-  // Función para enviar los datos a Google Sheets
+  // Función para enviar los datos a la URL según el día seleccionado
   const handleSendPress = async () => {
     if (loading) return; // Evita múltiples envíos si está en proceso
-
+  
     setLoading(true);
     try {
-      const formData = new FormData();
+      // Obtener la URL basada en el día seleccionado y el userId
+      const url = getUrlByDay(selectedDay, userId);
       
+      if (!url) {
+        Alert.alert('Error', 'Día no seleccionado o no válido.');
+        setLoading(false);
+        return;
+      }
+  
+      const formData = new FormData();
       formData.append('userId', userId); // Incluye el userId en el FormData
-
+  
       // Agrega cada producto y su cantidad al formData
       orderOfProducts.forEach(productName => {
         const quantity = quantities[productName] || '0';
         formData.append(productName, quantity);
       });
-
-      // Petición POST a Google Apps Script
-      const response = await fetch(`https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`, {
+  
+      const response = await fetch(url, {
         method: 'POST',
         body: formData,
       });
-
+  
       if (!response.ok) {
         throw new Error('Error al enviar las cantidades');
       }
-
+  
       Alert.alert('Éxito', '¡Cantidades enviadas exitosamente!');
       setQuantities({}); // Limpia las cantidades después de enviar
     } catch (error) {
@@ -92,6 +114,8 @@ const ProductList = ({ selectedDay, userId }) => {
       setLoading(false);
     }
   };
+  
+
 
   return (
     <ScrollView contentContainerStyle={styles.container}>

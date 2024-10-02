@@ -12,6 +12,39 @@ const Cargue = ({ userId }) => {
 
   const scaleAnims = useRef({}).current;
 
+  const dayUrls = {
+    Lunes: {
+      GET: `https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`,
+    },
+    Martes: {
+      GET: `https://script.google.com/macros/s/tu-url-de-martes-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-martes-post`,
+    },
+    Miércoles: {
+      GET: `https://script.google.com/macros/s/tu-url-de-miercoles-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-miercoles-post`,
+    },
+    Jueves: {
+      GET: `https://script.google.com/macros/s/tu-url-de-jueves-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-jueves-post`,
+    },
+    Viernes: {
+      GET: `https://script.google.com/macros/s/tu-url-de-viernes-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-viernes-post`,
+    },
+    Sábado: {
+      GET: `https://script.google.com/macros/s/tu-url-de-sabado-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-sabado-post`,
+    },
+    Domingo: {
+      GET: `https://script.google.com/macros/s/tu-url-de-domingo-get`,
+      POST: `https://script.google.com/macros/s/tu-url-de-domingo-post`,
+    },
+  };
+
+  const { GET: BASE_GET_URL, POST: BASE_POST_URL } = dayUrls[selectedDay];
+
   const productos = [
    "AREPA TIPO OBLEA",
     "AREPA MEDIANA",
@@ -53,8 +86,7 @@ const Cargue = ({ userId }) => {
     "ENVUELTO DE MAIZ X 5 UND"
   ];
 
-  const BASE_GET_URL = `https://script.google.com/macros/s/AKfycbyHwYBeNjh5HjfKkZgMdQkAYi6bq1Ho2LQmbhTUQ9DqxGpbcuCx1d0FS_D8C6Dd_yMusw/exec?userId=${userId}`;
-  const BASE_POST_URL = `https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`;
+ 
 
   const fetchData = async () => {
     try {
