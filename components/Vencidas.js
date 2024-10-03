@@ -47,18 +47,28 @@ const Vencidas = () => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [quantities, setQuantities] = useState({});
 
-  const renderItem = ({ item }) => (
-    <View style={styles.productContainer}>
-      <TouchableOpacity style={styles.productButton}>
-        <Text style={styles.productName}>{item}</Text>
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.quantityButton}>
-        <Text style={styles.quantityText}>
-          {quantities[item] || '0'}
-        </Text>
-      </TouchableOpacity>
-    </View>
-  );
+  const renderItem = ({ item }) => {
+    const vencidas = quantities[item]?.vencidas || '0';
+    const devoluciones = quantities[item]?.devoluciones || '0';
+    const total = parseInt(vencidas) + parseInt(devoluciones);
+
+    return (
+      <View style={styles.productContainer}>
+        <TouchableOpacity style={styles.productButton}>
+          <Text style={styles.productName}>{item}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quantityButton}>
+          <Text style={styles.quantityText}>{vencidas}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quantityButton}>
+          <Text style={styles.quantityText}>{devoluciones}</Text>
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.quantityButton}>
+          <Text style={styles.quantityText}>{total}</Text>
+        </TouchableOpacity>
+      </View>
+    );
+  };
 
   return (
     <View style={styles.container}>
@@ -70,8 +80,10 @@ const Vencidas = () => {
       <View style={styles.contentContainer}>
         {/* Títulos de columnas fijos */}
         <View style={styles.headerRow}>
-          <Text style={[styles.headerText, styles.productHeader]}>PRODUCTO</Text>
-          <Text style={[styles.headerText, styles.quantityHeader]}>VENCIDAS</Text>
+        <Text style={[styles.headerText, styles.productHeader]}>PRODUCTO</Text>
+        <Text style={[styles.headerText, styles.vencidasHeader]}>VENCIDAS</Text>
+        <Text style={[styles.headerText, styles.devolucionHeader]}>DEVOLUCION</Text>
+        <Text style={[styles.headerText, styles.totalHeader]}>TOTAL</Text>
         </View>
 
         {!selectedDay && (
@@ -102,7 +114,6 @@ const styles = StyleSheet.create({
   },
   contentContainer: {
     flex: 1,
-  
   },
   scrollViewContent: {
     padding: 20,
@@ -118,22 +129,45 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: '#ddd',
     paddingBottom: 5,
-    marginBottom: 10,
+    marginBottom: 3,
     backgroundColor: '#f5f5f5', // Igual al fondo de la pantalla
   },
   headerText: {
-    fontSize: 13,
+    fontSize: 11,
     fontWeight: 'bold',
-    paddingVertical: 5,
     borderRadius: 8,
     textAlign: 'center',
-    color:'#696969'
+    color: '#696969',
+  },
+  
+  productHeader: {
+    width: '40%', // El ancho de la columna "PRODUCTO"
+    marginLeft: 24, // Mueve "PRODUCTO" hacia la derecha
+  },
+  
+  vencidasHeader: {
+    width: '15%',
+    marginRight: 1,
+    marginLeft: 22, // Mueve "VENCIDAS" hacia la derecha
+  },
+  
+  devolucionHeader: {
+    width: '25%',
+    marginRight: 1, // Mueve "DEVOLUCION" hacia la izquierda
+    marginLeft:5,
+  },
+  
+  totalHeader: {
+    width: '18%',
+   
+    marginRight:15, 
+    marginLeft:-15,
   },
   productHeader: {
-    width: '70%', // Ajustar el ancho de la columna de productos
+    width: '35%', // Ajustar el ancho de la columna de productos
   },
   quantityHeader: {
-    width: '25%', // Ajustar el ancho de la columna de cantidad
+    width: '20%', // Ajustar el ancho de las columnas de cantidad, devoluciones y total
   },
   productContainer: {
     flexDirection: 'row',
@@ -144,7 +178,7 @@ const styles = StyleSheet.create({
   productButton: {
     backgroundColor: 'white',
     borderRadius: 8,
-    padding: 10,
+    padding: 9,
     borderWidth: 1,
     borderColor: 'green',
     elevation: 2,
@@ -152,11 +186,12 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    width: '70%',
-    minHeight: 40, // Asegura una altura mínima
+    width: '40%',
+    minHeight: 47, // Asegura una altura mínima
     justifyContent: 'center',
     alignItems: 'center', // Centra el contenido
-  },
+  }
+  ,
   productName: {
     fontSize: 11,
     fontWeight: '900',
@@ -174,8 +209,8 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
-    width: '20%',
-    minHeight: 40, // Asegura una altura mínima
+    width: '19%',
+    minHeight: 47, // Asegura una altura mínima
     justifyContent: 'center',
     alignItems: 'center', // Centra el contenido
   },
