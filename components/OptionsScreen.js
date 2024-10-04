@@ -22,18 +22,21 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    
   },
   option: {
-    backgroundColor: '#66b3ff',
+    backgroundColor: '#00ad53',
     padding: 20,
-    marginVertical: 10,
+    marginVertical: 20,
     width: '80%',
     alignItems: 'center',
     borderRadius: 10,
+    
   },
-  optionText: {
-    color: '#fff',
+    optionText: {
+    color: 'white',
     fontSize: 18,
+    fontWeight: 'bold'
   },
 });
 
