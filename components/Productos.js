@@ -15,7 +15,7 @@ const productos = [
     { name: "AREPA SANTANDEREANA", image: require('../images/arepa-santanderana.jpeg') },
     { name: "ALMOJABANAS X5", image: require('../images/almojabanas-x-5.jpeg') },
     { name: "ALMOJABANAS X10", image:require('../images/almojabana-x-10.jpeg')},
-    { name: "AREPA CON SEMILLA DE QUINUA", image: '' },
+    { name: "AREPA CON SEMILLA DE QUINUA", image:require('../images/arepa-semilla-quinua.jpeg')  },
     { name: "AREPA CON SEMILLA DE CHIA", image: '' },
     { name: "AREPA CON SEMILLA DE AJONJOLI", image: '' },
     { name: "AREPA CON SEMILLA DE LINANZA", image: '' },

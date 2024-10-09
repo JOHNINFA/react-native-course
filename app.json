@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "react-native-course",
-    "slug": "react-native-course",
+    "name": "fabrica",
+    "slug": "fabrica",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "assets/icono.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/icono.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -16,12 +16,25 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/icono.png",
         "backgroundColor": "#ffffff"
-      }
+      },
+      "package": "com.johni1981.reactnativecourse",
+      "minSdkVersion": 21,
+      "permissions": [
+        "CAMERA",
+        "READ_EXTERNAL_STORAGE",
+        "WRITE_EXTERNAL_STORAGE",
+        "INTERNET"
+      ]
     },
     "web": {
       "favicon": "./assets/favicon.png"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "c6fb7372-385f-4d9e-b151-cda8d6bd0817"
+      }
     }
   }
 }
