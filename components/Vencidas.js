@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FlatList, Text, TouchableOpacity, View, StyleSheet } from 'react-native';
 import Navbar from './Navbar'; // Importa el componente Navbar
 
@@ -43,14 +43,44 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
-const Vencidas = () => {
+// Mapeo de días a URLs
+const urlsByDay = {
+  Lunes: `https://script.google.com/macros/s/AKfycbyQg4TvbMxeZIgyeHoX70DL51g_CeV9vPDlh01VSTIMSIS02NB9LWd8XS8kGD9-vZ2pZQ/exec?userId=`,
+  Martes: `https://script.google.com/macros/s/OTRAlkxvHyA0KjWIXxxx/exec?userId=`, // Cambia la URL según tus necesidades
+  Miércoles: `https://script.google.com/macros/s/xyz123/exec?userId=`, // Cambia la URL
+  Jueves: `https://script.google.com/macros/s/abc456/exec?userId=`, // Cambia la URL
+  Viernes: `https://script.google.com/macros/s/def789/exec?userId=`, // Cambia la URL
+  Sábado: `https://script.google.com/macros/s/ghi012/exec?userId=`, // Cambia la URL
+  Domingo: `https://script.google.com/macros/s/jkl345/exec?userId=` // Cambia la URL
+};
+
+const Vencidas = ({ userId }) => {
   const [selectedDay, setSelectedDay] = useState(null);
   const [quantities, setQuantities] = useState({});
+
+  // Obtener datos de la API de Google Apps Script
+  useEffect(() => {
+    if (selectedDay) {
+      // Obtener la URL correspondiente al día seleccionado
+      const url = `${urlsByDay[selectedDay]}${userId}`;
+      fetch(url)
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Error en la red');
+          }
+          return response.json();
+        })
+        .then(data => {
+          setQuantities(data);
+        })
+        .catch(error => console.error('Error al obtener datos:', error));
+    }
+  }, [selectedDay, userId]);
 
   const renderItem = ({ item }) => {
     const vencidas = quantities[item]?.vencidas || '0';
     const devoluciones = quantities[item]?.devoluciones || '0';
-    const total = parseInt(vencidas) + parseInt(devoluciones);
+    const total = quantities[item]?.quantity || '0';
 
     return (
       <View style={styles.productContainer}>
@@ -80,10 +110,10 @@ const Vencidas = () => {
       <View style={styles.contentContainer}>
         {/* Títulos de columnas fijos */}
         <View style={styles.headerRow}>
-        <Text style={[styles.headerText, styles.productHeader]}>PRODUCTO</Text>
-        <Text style={[styles.headerText, styles.vencidasHeader]}>VENCIDAS</Text>
-        <Text style={[styles.headerText, styles.devolucionHeader]}>DEVOLUCION</Text>
-        <Text style={[styles.headerText, styles.totalHeader]}>TOTAL</Text>
+          <Text style={[styles.headerText, styles.productHeader]}>PRODUCTO</Text>
+          <Text style={[styles.headerText, styles.vencidasHeader]}>VENCIDAS</Text>
+          <Text style={[styles.headerText, styles.devolucionHeader]}>DEVOLUCION</Text>
+          <Text style={[styles.headerText, styles.totalHeader]}>TOTAL</Text>
         </View>
 
         {!selectedDay && (
@@ -159,7 +189,6 @@ const styles = StyleSheet.create({
   
   totalHeader: {
     width: '18%',
-   
     marginRight:15, 
     marginLeft:-15,
   },
@@ -190,8 +219,7 @@ const styles = StyleSheet.create({
     minHeight: 47, // Asegura una altura mínima
     justifyContent: 'center',
     alignItems: 'center', // Centra el contenido
-  }
-  ,
+  },
   productName: {
     fontSize: 11,
     fontWeight: '900',
