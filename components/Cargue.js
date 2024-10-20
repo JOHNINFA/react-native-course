@@ -208,12 +208,12 @@ const Cargue = ({ userId }) => {
     Animated.sequence([
       Animated.timing(scaleAnims[productName], {
         toValue: 1.1,
-        duration: 130,
+        duration: 80,
         useNativeDriver: true,
       }),
       Animated.timing(scaleAnims[productName], {
         toValue: 1,
-        duration: 150,
+        duration: 80,
         useNativeDriver: true,
       }),
     ]).start();

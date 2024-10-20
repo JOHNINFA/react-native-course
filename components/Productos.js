@@ -12,7 +12,7 @@ const productos = [
     { name: "AREPA DE CHOCLO CON QUESO PEQUEÑA", image: require('../images/arepa-choclo-con-queso-pequeña.jpeg') },
     { name: "AREPA BOYACENSE X5", image: require('../images/arepa-boyacense-x-5.jpeg') },
     { name: "AREPA BOYACENSE X10", image: require('../images/arepa-boyacense-x-10.jpeg') },
-    { name: "AREPA SANTANDEREANA", image: require('../images/arepa-santanderana.jpeg') },
+    { name: "AREPA SANTADERANA", image: require('../images/arepa-santanderana.jpeg') },
     { name: "ALMOJABANAS X5", image: require('../images/almojabanas-x-5.jpeg') },
     { name: "ALMOJABANAS X10", image:require('../images/almojabana-x-10.jpeg')},
     { name: "AREPA CON SEMILLA DE QUINUA", image:require('../images/arepa-semilla-quinua.jpeg')  },

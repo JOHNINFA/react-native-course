@@ -1,26 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { View, TextInput, Button, StyleSheet, Alert, ImageBackground } from 'react-native';
 
 const LoginScreen = ({ onLogin }) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [users, setUsers] = useState({}); // Estado para almacenar usuarios
 
-  const users = {
-    'Id1': '123',
-    'Id2': '345',
-    'Id3': '456',
-    'Id4': '678',
-    'Id5': '890',
-    'Id6': '1029',
+  // URL de la API de Google Apps Script
+  const API_URL = 'https://script.google.com/macros/s/AKfycbyCSQ-LxLA1VyltPegjtpnWV5xuMsgxLofPDniQj_ZgDmN8Jchh7JsFKdIlBAcqyuKBhA/exec'; // Cambia esto por la URL de tu API
+
+  // Cargar usuarios desde Google Sheets
+  const loadUsers = async () => {
+    try {
+      const response = await fetch(`${API_URL}?action=getUsers`);
+      const data = await response.json();
+      setUsers(data); // Actualiza el estado con los usuarios obtenidos
+    } catch (error) {
+      console.error('Error al acceder a Google Sheets:', error);
+      Alert.alert('Error', 'No se pudieron cargar los usuarios.');
+    }
   };
 
+  useEffect(() => {
+    loadUsers(); // Llama a la función al montar el componente
+  }, []);
+
   const handleLogin = () => {
+    // Verifica las credenciales ingresadas
     if (users[username] && users[username] === password) {
-      onLogin(true, username); // Pass the username to identify the user
+      onLogin(true, username); // Pasa el nombre de usuario para identificar al usuario
     } else {
       Alert.alert('Error', 'Nombre de usuario o contraseña incorrectos.');
     }
   };
+
   return (
     <ImageBackground source={require('./images/banner.png')} style={styles.background}>
       <View style={styles.container}>
