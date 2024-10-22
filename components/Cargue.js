@@ -298,10 +298,14 @@ const Cargue = ({ userId }) => {
         <ActivityIndicator size="large" color="#033468" />
       ) : (
         <FlatList
-          data={productos}
-          keyExtractor={item => item}
-          renderItem={renderProduct}
-          contentContainerStyle={styles.listContent}
+        data={productos}
+        keyExtractor={item => item}
+        renderItem={renderProduct}
+        initialNumToRender={5} // Número de elementos a renderizar inicialmente
+        maxToRenderPerBatch={5} // Máximo número de elementos por lote
+        windowSize={10} // Tamaño de la ventana
+        removeClippedSubviews={true} // Mejora el rendimiento
+        contentContainerStyle={styles.listContent}
         />
       )}
       <TouchableOpacity style={styles.reloadButton} onPress={handleReload}>
