@@ -48,7 +48,7 @@ const orderOfProducts = [
 // Mapeo de URLs por día
 const getUrlByDay = (selectedDay, userId) => {
   const urls = {
-    Lunes: `https://script.google.com/macros/s/AKfycbyQg4TvbMxeZIgyeHoX70DL51g_CeV9vPDlh01VSTIMSIS02NB9LWd8XS8kGD9-vZ2pZQ/exec?userId=${userId}`,
+    Lunes: `https://script.google.com/macros/s/AKfycbxoYuIwshfRHUHH5V5GuZ_izTCAoV-RJfVD7qn7kDqfm5k6SmBUZ0tq4jByXN1dQzMQjw/exec?userId=${userId}`,
     Martes: `https://example.com/martes?userId=${userId}`,
     Miércoles: `https://example.com/miercoles?userId=${userId}`,
     Jueves: `https://example.com/jueves?userId=${userId}`,
@@ -61,10 +61,9 @@ const getUrlByDay = (selectedDay, userId) => {
 };
 
 const ProductList = ({ selectedDay, userId }) => {
-  const [quantities, setQuantities] = useState({}); // Guarda las cantidades
-  const [loading, setLoading] = useState(false); // Muestra el estado de carga
+  const [quantities, setQuantities] = useState({});
+  const [loading, setLoading] = useState(false);
 
-  // Maneja el cambio de cantidad para cada producto
   const handleQuantityChange = (productName, quantity) => {
     setQuantities((prevQuantities) => ({
       ...prevQuantities,
@@ -72,13 +71,11 @@ const ProductList = ({ selectedDay, userId }) => {
     }));
   };
 
-  // Función para enviar los datos a la URL según el día seleccionado
   const handleSendPress = async () => {
-    if (loading) return; // Evita múltiples envíos si está en proceso
-  
+    if (loading) return;
+
     setLoading(true);
     try {
-      // Obtener la URL basada en el día seleccionado y el userId
       const url = getUrlByDay(selectedDay, userId);
       
       if (!url) {
@@ -86,27 +83,32 @@ const ProductList = ({ selectedDay, userId }) => {
         setLoading(false);
         return;
       }
-  
+
       const formData = new FormData();
-      formData.append('userId', userId); // Incluye el userId en el FormData
-  
-      // Agrega cada producto y su cantidad al formData
+      formData.append('userId', userId);
+
       orderOfProducts.forEach(productName => {
         const quantity = quantities[productName] || '0';
         formData.append(productName, quantity);
       });
-  
+
       const response = await fetch(url, {
         method: 'POST',
         body: formData,
       });
-  
+
+      const responseText = await response.text(); // Obtener el texto de la respuesta
+
       if (!response.ok) {
         throw new Error('Error al enviar las cantidades');
       }
-  
-      Alert.alert('Éxito', '¡Cantidades enviadas exitosamente!');
-      setQuantities({}); // Limpia las cantidades después de enviar
+
+      if (responseText.includes("Error: No se pueden enviar datos hasta que las celdas estén vacías")) {
+        Alert.alert('Error', 'No se pueden enviar datos hasta que las celdas estén vacías en la hoja de cálculo.');
+      } else {
+        Alert.alert('Éxito', '¡Cantidades enviadas exitosamente!');
+        setQuantities({});
+      }
     } catch (error) {
       console.error('Error:', error);
       Alert.alert('Error', 'Hubo un error al enviar las cantidades');
@@ -114,8 +116,6 @@ const ProductList = ({ selectedDay, userId }) => {
       setLoading(false);
     }
   };
-  
-
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
@@ -125,10 +125,10 @@ const ProductList = ({ selectedDay, userId }) => {
       {orderOfProducts.map((productName, index) => (
         <Product
           key={index}
-          product={productos[index]} // Asegúrate de que este objeto esté en el orden correcto
-          quantity={quantities[productName] || '0'} // Usa la cantidad o '0' si no se ha ingresado
-          onQuantityChange={handleQuantityChange} // Maneja cambios de cantidad
-          editable={!!selectedDay} // Si no se selecciona día, deshabilita el campo
+          product={productos[index]}
+          quantity={quantities[productName] || '0'}
+          onQuantityChange={handleQuantityChange}
+          editable={!!selectedDay}
         />
       ))}
       <TouchableOpacity
@@ -170,3 +170,4 @@ const styles = StyleSheet.create({
 });
 
 export default ProductList;
+

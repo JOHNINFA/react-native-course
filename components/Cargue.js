@@ -14,7 +14,7 @@ const Cargue = ({ userId }) => {
 
   const dayUrls = {
     Lunes: {
-      GET: `https://script.google.com/macros/s/AKfycbyQg4TvbMxeZIgyeHoX70DL51g_CeV9vPDlh01VSTIMSIS02NB9LWd8XS8kGD9-vZ2pZQ/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbxoYuIwshfRHUHH5V5GuZ_izTCAoV-RJfVD7qn7kDqfm5k6SmBUZ0tq4jByXN1dQzMQjw/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`,
     },
     Martes: {
@@ -118,7 +118,7 @@ const Cargue = ({ userId }) => {
       }, {});
   
       setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
-  
+
       const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
       if (allQuantitiesZero) {
         const resetCheckedItems = productos.reduce((acc, product) => {
