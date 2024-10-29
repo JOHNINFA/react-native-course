@@ -7,7 +7,7 @@ const LoginScreen = ({ onLogin }) => {
   const [users, setUsers] = useState({}); // Estado para almacenar usuarios
 
   // URL de la API de Google Apps Script
-  const API_URL = 'https://script.google.com/macros/s/AKfycbyCSQ-LxLA1VyltPegjtpnWV5xuMsgxLofPDniQj_ZgDmN8Jchh7JsFKdIlBAcqyuKBhA/exec'; // Cambia esto por la URL de tu API
+  const API_URL = 'https://script.google.com/macros/s/AKfycbxwYn4Ea1FMWIHXgjBTRSvTf5CJZ-J6B5iyahxUnH0yTmIc2lNQ0NncUh_2pprMyjo/exec'; // Cambia esto por la URL de tu API
 
   // Cargar usuarios desde Google Sheets
   const loadUsers = async () => {

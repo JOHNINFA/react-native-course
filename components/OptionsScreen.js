@@ -1,6 +1,10 @@
 import React, { useState } from 'react';
 import { View, Text, TouchableOpacity, StyleSheet, BackHandler, Alert } from 'react-native';
-import Ionicons from 'react-native-vector-icons/Ionicons'; // Importamos Ionicons para los íconos
+import CloudDownloadIcon from '../assets/cloud-download-outline.svg';
+import CloudUploadIcon from '../assets/cloud-upload-outline.svg';
+import Rendimiento from '../assets/newspaper-outline.svg';
+
+
 
 const OptionsScreen = ({ navigation, userId }) => {
   const [carguePressed, setCarguePressed] = useState(false); // Estado para verificar si "Cargue" ha sido presionado
@@ -61,16 +65,16 @@ const OptionsScreen = ({ navigation, userId }) => {
 
       <TouchableOpacity style={styles.option} onPress={handleCarguePress}>
         <View style={[styles.iconWithText, { paddingRight: 14.5 }]}>
-          {/* Ícono de descarga para el botón Cargue */}
-          <Ionicons name="cloud-download-outline" size={24} color="white" style={styles.icon} />
+          <CloudDownloadIcon width={24} height={24}  color="white" fill="white"   style={styles.icon} />
           <Text style={styles.optionText}>Cargue</Text>
         </View>
       </TouchableOpacity>
 
+
       <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Main')}>
         <View style={styles.iconWithText}>
           {/* Ícono de subida para el botón Sugerido */}
-          <Ionicons name="cloud-upload-outline" size={24} color="white" style={styles.icon} />
+          < CloudUploadIcon width={24} height={24}  color="white"  fill="white" style={styles.icon} />
           <Text style={styles.optionText}>Sugerido</Text>
         </View>
       </TouchableOpacity>
@@ -78,7 +82,7 @@ const OptionsScreen = ({ navigation, userId }) => {
       <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Vencidas')}>
         <View style={styles.iconWithText}>
           {/* Ícono de periódico para el botón Rendimiento */}
-          <Ionicons name="newspaper-outline" size={24} color="white" style={styles.icon} />
+          < Rendimiento width={24} height={24}  color="white" fill="white" style={styles.icon} />
           <Text style={styles.optionText}>Rendimiento</Text>
         </View>
       </TouchableOpacity>
