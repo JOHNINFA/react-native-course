@@ -48,7 +48,7 @@ const orderOfProducts = [
 // Mapeo de URLs por día
 const getUrlByDay = (selectedDay, userId) => {
   const urls = {
-    Lunes: `https://script.google.com/macros/s/AKfycbxoYuIwshfRHUHH5V5GuZ_izTCAoV-RJfVD7qn7kDqfm5k6SmBUZ0tq4jByXN1dQzMQjw/exec?userId=${userId}`,
+    Lunes: `https://script.google.com/macros/s/AKfycbyVnHHWGlPiPM6iDUeVfT6-puzI9TEHWfD0zsUgtUT9R3zJgC91M6UAaR791StUm4Ke/exec?userId=${userId}`,
     Martes: `https://example.com/martes?userId=${userId}`,
     Miércoles: `https://example.com/miercoles?userId=${userId}`,
     Jueves: `https://example.com/jueves?userId=${userId}`,

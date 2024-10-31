@@ -11,11 +11,12 @@ const Cargue = ({ userId }) => {
   const [loading, setLoading] = useState(true);
 
   const scaleAnims = useRef({}).current;
+  
 
   const dayUrls = {
     Lunes: {
-      GET: `https://script.google.com/macros/s/AKfycbxoYuIwshfRHUHH5V5GuZ_izTCAoV-RJfVD7qn7kDqfm5k6SmBUZ0tq4jByXN1dQzMQjw/exec?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/AKfycbwiKA3t2PGxOIFLgJwa4bJsIZNqOKhnAwU1SkroRMeeq0EwEpSnb4-Sb70lV5LmPUJFSg/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbyVnHHWGlPiPM6iDUeVfT6-puzI9TEHWfD0zsUgtUT9R3zJgC91M6UAaR791StUm4Ke/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbzkBVQgriQGEPQzn5VtoXSAju15Z-1nuG_1UJ97hoSDPj8gzIGLDghisk3RR3mia73u/exec?userId=${userId}`,
     },
     Martes: {
       GET: `https://script.google.com/macros/s/tu-url-de-martes-get`,
@@ -196,28 +197,34 @@ const Cargue = ({ userId }) => {
   const syncDataToServerDebounced = useCallback(debounce(syncDataToServer, 300), []);
 
   const handleCheckChange = useCallback((productName, type) => {
+    // Verifica si el checkbox ya está marcado
+    if (checkedItems[productName]?.[type]) return;
+  
     if (type === 'V' && quantities[productName] === '0') {
       Alert.alert('Atención', 'No puedes marcar este producto porque la cantidad es cero.');
       return;
     }
   
+    // Inicializa la animación para el producto si aún no existe
     if (!scaleAnims[productName]) {
       scaleAnims[productName] = new Animated.Value(1);
     }
   
+    // Animación de escala
     Animated.sequence([
       Animated.timing(scaleAnims[productName], {
-        toValue: 1.1,
-        duration: 80,
+        toValue: 1.05,
+        duration: 30,
         useNativeDriver: true,
       }),
       Animated.timing(scaleAnims[productName], {
         toValue: 1,
-        duration: 80,
+        duration: 30,
         useNativeDriver: true,
       }),
     ]).start();
   
+    // Crear una copia de los elementos seleccionados y marcar el checkbox
     const newCheckedItems = {
       ...checkedItems,
       [productName]: {
@@ -227,11 +234,12 @@ const Cargue = ({ userId }) => {
     };
   
     setCheckedItems(newCheckedItems);
-    Vibration.vibrate(50);
+    Vibration.vibrate(30);
   
     // Guardar en AsyncStorage usando userId como parte de la clave
     AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(newCheckedItems));
   
+    // Sincronizar con el servidor de forma debounced
     syncDataToServerDebounced(newCheckedItems);
   }, [checkedItems, quantities]);
   
