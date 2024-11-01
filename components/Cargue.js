@@ -200,48 +200,33 @@ const Cargue = ({ userId }) => {
     // Verifica si el checkbox ya está marcado
     if (checkedItems[productName]?.[type]) return;
   
+    // Verifica si el tipo es 'V' y la cantidad es cero
     if (type === 'V' && quantities[productName] === '0') {
       Alert.alert('Atención', 'No puedes marcar este producto porque la cantidad es cero.');
       return;
     }
+    
   
-    // Inicializa la animación para el producto si aún no existe
-    if (!scaleAnims[productName]) {
-      scaleAnims[productName] = new Animated.Value(1);
-    }
-  
-    // Animación de escala
-    Animated.sequence([
-      Animated.timing(scaleAnims[productName], {
-        toValue: 1.05,
-        duration: 30,
-        useNativeDriver: true,
-      }),
-      Animated.timing(scaleAnims[productName], {
-        toValue: 1,
-        duration: 30,
-        useNativeDriver: true,
-      }),
-    ]).start();
-  
-    // Crear una copia de los elementos seleccionados y marcar el checkbox
+    // Crear un nuevo objeto de checkedItems con el cambio correspondiente
     const newCheckedItems = {
       ...checkedItems,
       [productName]: {
         ...checkedItems[productName],
-        [type]: true,
+        [type]: !checkedItems[productName][type], // Cambia el estado (marcado/desmarcado)
       },
     };
   
-    setCheckedItems(newCheckedItems);
-    Vibration.vibrate(30);
+    // Actualiza el estado de checkedItems
+    setCheckedItems(newCheckedItems); 
+    Vibration.vibrate(30); // Agrega vibración al cambiar el estado
   
-    // Guardar en AsyncStorage usando userId como parte de la clave
+    // Guarda el estado en AsyncStorage usando userId como parte de la clave
     AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(newCheckedItems));
   
-    // Sincronizar con el servidor de forma debounced
-    syncDataToServerDebounced(newCheckedItems);
+    // Sincronizar con el servidor de forma debounced (si tienes esta función implementada)
+    syncDataToServerDebounced(newCheckedItems); // Asumiendo que syncDataToServerDebounced está definida
   }, [checkedItems, quantities]);
+  
   
 
   const handleReload = async () => {
