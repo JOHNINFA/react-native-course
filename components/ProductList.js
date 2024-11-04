@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator } from 'react-native';
-import Product from './Product'; // Asegúrate de que este componente esté bien configurado
-import productos from './Productos'; // Verifica que esta sea la estructura correcta de los productos
+import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator, View } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import Product from './Product';
+import productos from './Productos';
 
-// Lista de productos en el orden deseado
+
+
 const orderOfProducts = [
   "AREPA TIPO OBLEA",
   "AREPA MEDIANA",
@@ -45,10 +47,9 @@ const orderOfProducts = [
   "ENVUELTO DE MAIZ X 5 UND"
 ];
 
-// Mapeo de URLs por día
 const getUrlByDay = (selectedDay, userId) => {
   const urls = {
-    Lunes: `https://script.google.com/macros/s/AKfycbyVnHHWGlPiPM6iDUeVfT6-puzI9TEHWfD0zsUgtUT9R3zJgC91M6UAaR791StUm4Ke/exec?userId=${userId}`,
+    Lunes: `https://script.google.com/macros/s/AKfycbxoHBuRMK02TlZH5u9WMlA2v6PoQ30P8dWBBGNNdGr5LQOT7F4Kxn-4v80gvcf1Dedf/exec?userId=${userId}`,
     Martes: `https://example.com/martes?userId=${userId}`,
     Miércoles: `https://example.com/miercoles?userId=${userId}`,
     Jueves: `https://example.com/jueves?userId=${userId}`,
@@ -56,13 +57,13 @@ const getUrlByDay = (selectedDay, userId) => {
     Sábado: `https://example.com/sabado?userId=${userId}`,
     Domingo: `https://example.com/domingo?userId=${userId}`,
   };
-
-  return urls[selectedDay] || null; // Retorna la URL correspondiente al día o null si no coincide
+  return urls[selectedDay] || null;
 };
-
 const ProductList = ({ selectedDay, userId }) => {
   const [quantities, setQuantities] = useState({});
   const [loading, setLoading] = useState(false);
+  const [date, setDate] = useState(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   const handleQuantityChange = (productName, quantity) => {
     setQuantities((prevQuantities) => ({
@@ -71,13 +72,30 @@ const ProductList = ({ selectedDay, userId }) => {
     }));
   };
 
-  const handleSendPress = async () => {
-    if (loading) return;
+  const handleSendPress = () => {
+    if (!loading && selectedDay) {
+      setShowDatePicker(true); // Abre el DatePicker para seleccionar fecha
+    }
+  };
 
-    setLoading(true);
+  const handleDateChange = async (event, selectedDate) => {
+    setShowDatePicker(false); // Cierra el DatePicker
+
+    // Detectar si el usuario seleccionó "Cancelar" en lugar de confirmar la fecha
+    if (event.type === 'dismissed') {
+      setLoading(false); // No enviar si se canceló
+      return;
+    }
+
+    setDate(selectedDate); // Actualiza la fecha seleccionada
+    setLoading(true); // Activa el estado de carga
+
+     // Ajustar la fecha a la zona horaria local
+  const localDate = new Date(selectedDate);
+  localDate.setMinutes(localDate.getMinutes() - localDate.getTimezoneOffset());
+
     try {
       const url = getUrlByDay(selectedDay, userId);
-      
       if (!url) {
         Alert.alert('Error', 'Día no seleccionado o no válido.');
         setLoading(false);
@@ -86,22 +104,17 @@ const ProductList = ({ selectedDay, userId }) => {
 
       const formData = new FormData();
       formData.append('userId', userId);
+      formData.append('date', selectedDate.toISOString().split('T')[0]);
 
       orderOfProducts.forEach(productName => {
         const quantity = quantities[productName] || '0';
         formData.append(productName, quantity);
       });
 
-      const response = await fetch(url, {
-        method: 'POST',
-        body: formData,
-      });
+      const response = await fetch(url, { method: 'POST', body: formData });
+      const responseText = await response.text();
 
-      const responseText = await response.text(); // Obtener el texto de la respuesta
-
-      if (!response.ok) {
-        throw new Error('Error al enviar las cantidades');
-      }
+      if (!response.ok) throw new Error('Error al enviar las cantidades');
 
       if (responseText.includes("Error: No se pueden enviar datos hasta que las celdas estén vacías")) {
         Alert.alert('Error', 'No se pueden enviar datos hasta que las celdas estén vacías en la hoja de cálculo.');
@@ -131,6 +144,7 @@ const ProductList = ({ selectedDay, userId }) => {
           editable={!!selectedDay}
         />
       ))}
+
       <TouchableOpacity
         onPress={handleSendPress}
         style={styles.sendButton}
@@ -142,6 +156,16 @@ const ProductList = ({ selectedDay, userId }) => {
           <Text style={styles.sendButtonText}>Enviar Todas las Cantidades</Text>
         )}
       </TouchableOpacity>
+
+      {/* Selector de fecha */}
+      {showDatePicker && (
+        <DateTimePicker
+          value={date}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
     </ScrollView>
   );
 };
@@ -170,4 +194,3 @@ const styles = StyleSheet.create({
 });
 
 export default ProductList;
-

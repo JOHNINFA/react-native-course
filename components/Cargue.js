@@ -166,7 +166,7 @@ const Cargue = ({ userId }) => {
     fetchData();
     const intervalId = setInterval(() => {
       fetchData();
-    }, 10000);
+    }, 40000);
     return () => clearInterval(intervalId);
   }, [userId]);
 
@@ -205,7 +205,9 @@ const Cargue = ({ userId }) => {
       Alert.alert('Atención', 'No puedes marcar este producto porque la cantidad es cero.');
       return;
     }
-    
+    if (!scaleAnims[productName]) {
+      scaleAnims[productName] = new Animated.Value(2); // Cambia el valor inicial a 1
+  }
   
     // Crear un nuevo objeto de checkedItems con el cambio correspondiente
     const newCheckedItems = {
@@ -216,16 +218,29 @@ const Cargue = ({ userId }) => {
       },
     };
   
-    // Actualiza el estado de checkedItems
-    setCheckedItems(newCheckedItems); 
-    Vibration.vibrate(30); // Agrega vibración al cambiar el estado
-  
+    setCheckedItems(newCheckedItems);
+    Vibration.vibrate(30);
+
+    // Animación de escala
+    Animated.sequence([
+        Animated.timing(scaleAnims[productName], {
+            toValue: 1.05,
+            duration: 50,
+            useNativeDriver: true,
+        }),
+        Animated.timing(scaleAnims[productName], {
+            toValue: 1,
+            duration: 50,
+            useNativeDriver: true,
+        }),
+    ]).start();
     // Guarda el estado en AsyncStorage usando userId como parte de la clave
     AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(newCheckedItems));
   
     // Sincronizar con el servidor de forma debounced (si tienes esta función implementada)
     syncDataToServerDebounced(newCheckedItems); // Asumiendo que syncDataToServerDebounced está definida
   }, [checkedItems, quantities]);
+  
   
   
 

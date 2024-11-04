@@ -8,6 +8,8 @@ import MainScreen from './MainScreen';
 import OptionsScreen from './components/OptionsScreen';
 import Cargue from './components/Cargue';
 import Vencidas from './components/Vencidas';
+import 'react-native-gesture-handler';
+
 
 const Stack = createStackNavigator();
 
