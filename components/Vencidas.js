@@ -46,12 +46,12 @@ const orderOfProducts = [
 // Mapeo de días a URLs
 const urlsByDay = {
   Lunes: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec/exec?userId=`,
-  Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=`, // Cambia la URL según tus necesidades
-  Miércoles: `https://script.google.com/macros/s/xyz123/exec?userId=`, // Cambia la URL
-  Jueves: `https://script.google.com/macros/s/abc456/exec?userId=`, // Cambia la URL
-  Viernes: `https://script.google.com/macros/s/def789/exec?userId=`, // Cambia la URL
-  Sábado: `https://script.google.com/macros/s/ghi012/exec?userId=`, // Cambia la URL
-  Domingo: `https://script.google.com/macros/s/jkl345/exec?userId=` // Cambia la URL
+  Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=`, 
+  Miércoles: `https://script.google.com/macros/s/AKfycbzOzY7ShAxaWZ1zQTYCAVxU2GfiMvnpEDaAMQmMdVDqo_UKqCNERpy4YPyXsqRVsC4/exec?userId=`, 
+  Jueves: `https://script.google.com/macros/s/AKfycbxAxFfQzZCxxHJ0clpS3Lzym3hFIAJ4IegV7Es_fLDZ2Z5yHPkvA7cAz3wsWURvApQV/exec?userId=`, 
+  Viernes: `https://script.google.com/macros/s/AKfycbxXpKzH0tuvKHCfrcJKGbXyGS55Ik2K0G4yx3sHNJDOQH6w3jGx-UsRdTV0yKOOxKf9/exec?userId=`, 
+  Sábado: `https://script.google.com/macros/s/AKfycby9dmz5U6qssacj3z_ZfeQBrdikY_Ek4kjODCUKK2JcU68pMjagRM2HtzlpFcre5nUY/exec?userId=`, 
+  
 };
 
 const Vencidas = ({ userId }) => {

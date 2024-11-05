@@ -22,25 +22,22 @@ const Cargue = ({ userId }) => {
       POST: `https://script.google.com/macros/s/AKfycbz2lYszS5rFbxePsdyCo5iEWyiuiJN9UJBeWDLiSzvzVuCnjU8lBkMao49Vw79WSQc/exec?userId=${userId}`,
     },
     Miércoles: {
-      GET: `https://script.google.com/macros/s/tu-url-de-miercoles-get?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/tu-url-de-miercoles-post?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbzOzY7ShAxaWZ1zQTYCAVxU2GfiMvnpEDaAMQmMdVDqo_UKqCNERpy4YPyXsqRVsC4/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbwqrnajtsm5P1NxOu90u6huxvw1BDhfkc1iGXUvvYzmiPoVnE6pM-L_DKNT6pa4GLDr/exec?userId=${userId}`,
     },
     Jueves: {
-      GET: `https://script.google.com/macros/s/tu-url-de-jueves-get?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/tu-url-de-jueves-post?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbxAxFfQzZCxxHJ0clpS3Lzym3hFIAJ4IegV7Es_fLDZ2Z5yHPkvA7cAz3wsWURvApQV/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbzE5sCtzpNuUkLnJ7MXqI4VHTf_IYZty276GHu8kAo56z1JzPvC8ujXaOroZzcxUww/exec?userId=${userId}`,
     },
     Viernes: {
-      GET: `https://script.google.com/macros/s/tu-url-de-viernes-get?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/tu-url-de-viernes-post?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbxXpKzH0tuvKHCfrcJKGbXyGS55Ik2K0G4yx3sHNJDOQH6w3jGx-UsRdTV0yKOOxKf9/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbwMBIXzT769iTet5QDGM_DWTrAV709AdaEY9g607NOt3JK3OWu6XozjZUvOyIRf410/exec?userId=${userId}`,
     },
     Sábado: {
-      GET: `https://script.google.com/macros/s/tu-url-de-sabado-get?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/tu-url-de-sabado-post?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycby9dmz5U6qssacj3z_ZfeQBrdikY_Ek4kjODCUKK2JcU68pMjagRM2HtzlpFcre5nUY/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbz-7Qyf1c3cZ-HIym_GSlqHW1M3Irvr2zU9Jlm_onnBp9LcHnyFtMWdgR0bjCbgF6Mb/exec?userId=${userId}`,
     },
-    Domingo: {
-      GET: `https://script.google.com/macros/s/tu-url-de-domingo-get?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/tu-url-de-domingo-post?userId=${userId}`,
-    },
+    
   };
 
   const { GET: BASE_GET_URL, POST: BASE_POST_URL } = dayUrls[selectedDay];
@@ -153,8 +150,8 @@ const Cargue = ({ userId }) => {
     // Llamar a fetchData para cargar los datos del día seleccionado
     fetchData();
     
-    // Establecer intervalo para actualizar datos cada 40 segundos
-    const intervalId = setInterval(fetchData, 40000);
+    // Establecer intervalo para actualizar datos cada 50 segundos
+    const intervalId = setInterval(fetchData, 50000);
   
     return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar o cambiar de día
   }, [userId, selectedDay]); // Añadir dependencia a selectedDay para que se ejecute cada vez que cambies el día
@@ -196,7 +193,7 @@ const Cargue = ({ userId }) => {
     }
 
     if (!scaleAnims[productName]) {
-      scaleAnims[productName] = new Animated.Value(1);
+      scaleAnims[productName] = new Animated.Value(2);
     }
 
     const newCheckedItems = {
@@ -229,7 +226,7 @@ const Cargue = ({ userId }) => {
     await fetchData();
   };
 
-  const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
+  const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
 
   const renderProduct = ({ item }) => {
     const scale = scaleAnims[item] || new Animated.Value(1);

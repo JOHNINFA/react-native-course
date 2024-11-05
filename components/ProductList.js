@@ -51,11 +51,11 @@ const getUrlByDay = (selectedDay, userId) => {
   const urls = {
     Lunes: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec?userId=${userId}`,
     Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=${userId}`,
-    Miércoles: `https://example.com/miercoles?userId=${userId}`,
-    Jueves: `https://example.com/jueves?userId=${userId}`,
-    Viernes: `https://example.com/viernes?userId=${userId}`,
-    Sábado: `https://example.com/sabado?userId=${userId}`,
-    Domingo: `https://example.com/domingo?userId=${userId}`,
+    Miércoles: `https://script.google.com/macros/s/AKfycbzOzY7ShAxaWZ1zQTYCAVxU2GfiMvnpEDaAMQmMdVDqo_UKqCNERpy4YPyXsqRVsC4/exec?userId=${userId}`,
+    Jueves: `https://script.google.com/macros/s/AKfycbxAxFfQzZCxxHJ0clpS3Lzym3hFIAJ4IegV7Es_fLDZ2Z5yHPkvA7cAz3wsWURvApQV/exec?userId=${userId}`,
+    Viernes: `https://script.google.com/macros/s/AKfycbxXpKzH0tuvKHCfrcJKGbXyGS55Ik2K0G4yx3sHNJDOQH6w3jGx-UsRdTV0yKOOxKf9/exec?userId=${userId}`,
+    Sábado: `https://script.google.com/macros/s/AKfycby9dmz5U6qssacj3z_ZfeQBrdikY_Ek4kjODCUKK2JcU68pMjagRM2HtzlpFcre5nUY/exec?userId=${userId}`,
+   
   };
   return urls[selectedDay] || null;
 };
