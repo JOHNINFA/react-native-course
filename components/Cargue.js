@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback,useRef } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { View, Text, StyleSheet, FlatList, TouchableOpacity, ScrollView, Vibration, ActivityIndicator, Alert, Animated } from 'react-native';
 import { CheckBox } from 'react-native-elements';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -9,38 +9,37 @@ const Cargue = ({ userId }) => {
   const [quantities, setQuantities] = useState({});
   const [checkedItems, setCheckedItems] = useState({});
   const [loading, setLoading] = useState(true);
-
   const scaleAnims = useRef({}).current;
   
 
   const dayUrls = {
     Lunes: {
-      GET: `https://script.google.com/macros/s/AKfycbyVnHHWGlPiPM6iDUeVfT6-puzI9TEHWfD0zsUgtUT9R3zJgC91M6UAaR791StUm4Ke/exec?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/AKfycbzkBVQgriQGEPQzn5VtoXSAju15Z-1nuG_1UJ97hoSDPj8gzIGLDghisk3RR3mia73u/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbzW2s4XcpXhBneFTb_LgtJuVmPjJhdlDFDdjugqz6JE2jx8sBR3V1pUWibXGM1k1KSd/exec?userId=${userId}`,
     },
     Martes: {
-      GET: `https://script.google.com/macros/s/tu-url-de-martes-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-martes-post`,
+      GET: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbz2lYszS5rFbxePsdyCo5iEWyiuiJN9UJBeWDLiSzvzVuCnjU8lBkMao49Vw79WSQc/exec?userId=${userId}`,
     },
     Miércoles: {
-      GET: `https://script.google.com/macros/s/tu-url-de-miercoles-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-miercoles-post`,
+      GET: `https://script.google.com/macros/s/tu-url-de-miercoles-get?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/tu-url-de-miercoles-post?userId=${userId}`,
     },
     Jueves: {
-      GET: `https://script.google.com/macros/s/tu-url-de-jueves-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-jueves-post`,
+      GET: `https://script.google.com/macros/s/tu-url-de-jueves-get?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/tu-url-de-jueves-post?userId=${userId}`,
     },
     Viernes: {
-      GET: `https://script.google.com/macros/s/tu-url-de-viernes-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-viernes-post`,
+      GET: `https://script.google.com/macros/s/tu-url-de-viernes-get?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/tu-url-de-viernes-post?userId=${userId}`,
     },
     Sábado: {
-      GET: `https://script.google.com/macros/s/tu-url-de-sabado-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-sabado-post`,
+      GET: `https://script.google.com/macros/s/tu-url-de-sabado-get?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/tu-url-de-sabado-post?userId=${userId}`,
     },
     Domingo: {
-      GET: `https://script.google.com/macros/s/tu-url-de-domingo-get`,
-      POST: `https://script.google.com/macros/s/tu-url-de-domingo-post`,
+      GET: `https://script.google.com/macros/s/tu-url-de-domingo-get?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/tu-url-de-domingo-post?userId=${userId}`,
     },
   };
 
@@ -90,69 +89,52 @@ const Cargue = ({ userId }) => {
  
 
   const fetchData = async () => {
+    setLoading(true); // Muestra el indicador de carga
     try {
-      // Usar claves que incluyan el userId
-      const storedCheckedItems = await AsyncStorage.getItem(`checkedItems_${userId}`);
-      const storedQuantities = await AsyncStorage.getItem(`quantities_${userId}`);
+      // Resetea el estado al cambiar de día
+      setCheckedItems({});
+      setQuantities({});
+  
+      const storedCheckedItems = await AsyncStorage.getItem(`checkedItems_${userId}_${selectedDay}`);
+      const storedQuantities = await AsyncStorage.getItem(`quantities_${userId}_${selectedDay}`);
   
       const initialCheckedItems = storedCheckedItems ? JSON.parse(storedCheckedItems) : {};
       const initialQuantities = storedQuantities ? JSON.parse(storedQuantities) : {};
   
-      const response = await fetch(BASE_GET_URL);
+      const response = await fetch(dayUrls[selectedDay].GET);
       const data = await response.json();
   
       const updatedQuantities = productos.reduce((acc, product) => {
-        const foundProduct = data[product];
-        acc[product] = foundProduct ? foundProduct.quantity || '0' : '0';
+        acc[product] = data[product]?.quantity || '0';
         return acc;
       }, {});
-  
-      setQuantities(prevQuantities => ({ ...prevQuantities, ...updatedQuantities }));
   
       const updatedCheckedItems = productos.reduce((acc, product) => {
-        const foundProduct = data[product];
+        const isQuantityZero = updatedQuantities[product] === '0';
+  
+        // Si la cantidad es 0, desmarca el checkbox de 'V'
         acc[product] = {
-          D: foundProduct ? foundProduct.checked || false : false,
-          V: initialCheckedItems[product]?.V || false
+          D: data[product]?.checked || false,
+          V: isQuantityZero ? false : initialCheckedItems[product]?.V || false,
         };
+  
         return acc;
       }, {});
   
-      setCheckedItems(prevCheckedItems => ({ ...prevCheckedItems, ...updatedCheckedItems }));
-
-      const allQuantitiesZero = Object.values(updatedQuantities).every(q => q === '0');
-      if (allQuantitiesZero) {
-        const resetCheckedItems = productos.reduce((acc, product) => {
-          acc[product] = {
-            D: checkedItems[product]?.D || false,
-            V: false,
-          };
-          return acc;
-        }, {});
+      setQuantities(updatedQuantities);
+      setCheckedItems(updatedCheckedItems);
   
-        setCheckedItems(resetCheckedItems);
-        await AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(resetCheckedItems));
+      // Guardar en AsyncStorage
+      await AsyncStorage.setItem(`quantities_${userId}_${selectedDay}`, JSON.stringify(updatedQuantities));
+      await AsyncStorage.setItem(`checkedItems_${userId}_${selectedDay}`, JSON.stringify(updatedCheckedItems));
   
-        const dataToSend = productos.map(product => ({
-          product,
-          checked: false
-        }));
-  
-        const postResponse = await fetch(BASE_POST_URL, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(dataToSend),
-        });
-  
-        if (!postResponse.ok) {
-          Alert.alert('Error', 'Hubo un problema al enviar los datos actualizados.');
-        }
+      // Enviar los datos actualizados al servidor si hay cambios en los checks de 'V'
+      const itemsToUpdate = Object.fromEntries(
+        Object.entries(updatedCheckedItems).filter(([product, item]) => item.V !== initialCheckedItems[product]?.V)
+      );
+      if (Object.keys(itemsToUpdate).length > 0) {
+        syncDataToServerDebounced(itemsToUpdate);
       }
-  
-      // Guardar los nuevos datos usando el userId en la clave
-      await AsyncStorage.setItem(`quantities_${userId}`, JSON.stringify(updatedQuantities));
   
     } catch (error) {
       console.error('Error fetching data:', error);
@@ -161,32 +143,41 @@ const Cargue = ({ userId }) => {
     }
   };
   
-
+  
   useEffect(() => {
+    // Limpiar los datos de cantidades y de checks cuando se cambia el día
+    setCheckedItems({});
+    setQuantities({});
+    setLoading(true);
+    
+    // Llamar a fetchData para cargar los datos del día seleccionado
     fetchData();
-    const intervalId = setInterval(() => {
-      fetchData();
-    }, 40000);
-    return () => clearInterval(intervalId);
-  }, [userId]);
+    
+    // Establecer intervalo para actualizar datos cada 40 segundos
+    const intervalId = setInterval(fetchData, 40000);
+  
+    return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar o cambiar de día
+  }, [userId, selectedDay]); // Añadir dependencia a selectedDay para que se ejecute cada vez que cambies el día
+  
 
   const syncDataToServer = async (newCheckedItems) => {
     const dataToSend = Object.entries(newCheckedItems).map(([product, item]) => ({
       product,
-      checked: item.V // Cambia esto según tu lógica
+      checked: item.V
     }));
+    console.log('Datos a enviar a la URL POST:', dataToSend); // Verifica el formato y contenido de dataToSend
+  console.log('URL de destino:', dayUrls[selectedDay].POST); // Confirma la URL de POST que se está usando
 
     try {
-      const response = await fetch(BASE_POST_URL, {
+      const response = await fetch(dayUrls[selectedDay].POST, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(dataToSend),
       });
 
       if (!response.ok) {
         Alert.alert('Error', 'Hubo un problema al enviar los datos.');
+        console.log('Error en la respuesta del servidor:', response.status); 
       }
     } catch (error) {
       console.error('Error al enviar datos:', error);
@@ -194,101 +185,89 @@ const Cargue = ({ userId }) => {
     }
   };
 
-  const syncDataToServerDebounced = useCallback(debounce(syncDataToServer, 300), []);
+  const syncDataToServerDebounced = useCallback(debounce(syncDataToServer, 300), [selectedDay]);
 
   const handleCheckChange = useCallback((productName, type) => {
-    // Verifica si el checkbox ya está marcado
     if (checkedItems[productName]?.[type]) return;
-  
-    // Verifica si el tipo es 'V' y la cantidad es cero
+
     if (type === 'V' && quantities[productName] === '0') {
       Alert.alert('Atención', 'No puedes marcar este producto porque la cantidad es cero.');
       return;
     }
+
     if (!scaleAnims[productName]) {
-      scaleAnims[productName] = new Animated.Value(2); // Cambia el valor inicial a 1
-  }
-  
-    // Crear un nuevo objeto de checkedItems con el cambio correspondiente
+      scaleAnims[productName] = new Animated.Value(1);
+    }
+
     const newCheckedItems = {
       ...checkedItems,
-      [productName]: {
-        ...checkedItems[productName],
-        [type]: !checkedItems[productName][type], // Cambia el estado (marcado/desmarcado)
-      },
+      [productName]: { ...checkedItems[productName], [type]: !checkedItems[productName][type] },
     };
-  
+
     setCheckedItems(newCheckedItems);
     Vibration.vibrate(30);
 
-    // Animación de escala
     Animated.sequence([
-        Animated.timing(scaleAnims[productName], {
-            toValue: 1.05,
-            duration: 50,
-            useNativeDriver: true,
-        }),
-        Animated.timing(scaleAnims[productName], {
-            toValue: 1,
-            duration: 50,
-            useNativeDriver: true,
-        }),
+      Animated.timing(scaleAnims[productName], {
+        toValue: 1.05,
+        duration: 50,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleAnims[productName], {
+        toValue: 1,
+        duration: 50,
+        useNativeDriver: true,
+      }),
     ]).start();
-    // Guarda el estado en AsyncStorage usando userId como parte de la clave
-    AsyncStorage.setItem(`checkedItems_${userId}`, JSON.stringify(newCheckedItems));
-  
-    // Sincronizar con el servidor de forma debounced (si tienes esta función implementada)
-    syncDataToServerDebounced(newCheckedItems); // Asumiendo que syncDataToServerDebounced está definida
-  }, [checkedItems, quantities]);
-  
-  
-  
+
+    AsyncStorage.setItem(`checkedItems_${userId}_${selectedDay}`, JSON.stringify(newCheckedItems));
+    syncDataToServerDebounced(newCheckedItems);
+  }, [checkedItems, quantities, selectedDay]);
 
   const handleReload = async () => {
     setLoading(true);
     await fetchData();
   };
+
   const dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado', 'Domingo'];
 
   const renderProduct = ({ item }) => {
     const scale = scaleAnims[item] || new Animated.Value(1);
-  
+
     return (
-    
-        <View style={styles.productContainer}>
-        <Animated.View style={{ transform: [{ scale }] }} key={item}>
+      <View style={styles.productContainer}>
+        <Animated.View style={{ transform: [{ scale }] }}>
           <CheckBox
             checked={checkedItems[item]?.V}
             onPress={() => handleCheckChange(item, 'V')}
             containerStyle={styles.checkbox}
             checkedColor="#28a745"
           />
-          </Animated.View>
-          <CheckBox
-            checked={checkedItems[item]?.D}
-            onPress={() => handleCheckChange(item, 'D')}
-            containerStyle={styles.checkbox}
-            disabled
-          />
-          <View style={styles.inputContainer}>
-            <Text style={styles.quantity}>{quantities[item] || '0'}</Text>
-          </View>
-          <View style={styles.descriptionContainer}>
-            <Text style={styles.description}>{item}</Text>
-          </View>
+        </Animated.View>
+        <CheckBox
+          checked={checkedItems[item]?.D}
+          onPress={() => handleCheckChange(item, 'D')}
+          containerStyle={styles.checkbox}
+          disabled
+        />
+        <View style={styles.inputContainer}>
+          <Text style={styles.quantity}>{quantities[item] || '0'}</Text>
         </View>
-     
+        <View style={styles.descriptionContainer}>
+          <Text style={styles.description}>{item}</Text>
+        </View>
+      </View>
     );
   };
-  
+
   return (
     <View style={styles.container}>
       <View style={styles.navbar}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.daysContainer}>
           {dias.map(dia => (
-            <TouchableOpacity 
-              key={dia} 
-              style={[styles.dayButton, selectedDay === dia && styles.selectedDayButton]} 
+            <TouchableOpacity
+              key={dia}
+              style={[styles.dayButton, selectedDay === dia && styles.selectedDayButton]}
               onPress={() => setSelectedDay(dia)}
             >
               <Text style={[styles.dayText, selectedDay === dia && styles.selectedDayText]}>{dia}</Text>
@@ -299,9 +278,9 @@ const Cargue = ({ userId }) => {
       <View style={styles.titleContainer}>
         <Text style={[styles.title, styles.titleCheckbox]}>V</Text>
         <Text style={[styles.title, styles.titleCheckbox]}>D</Text>
-        <Text style={[styles.title, styles.titleQuantity]}>Cantidades</Text>
-        <Text style={styles.title}>Producto</Text>
-      </View>
+        <Text style={[styles.title, styles.titleQuantity]}>C</Text>
+        <Text style={styles.title}>P</Text>
+        </View>
       {loading ? (
         <ActivityIndicator size="large" color="#033468" />
       ) : (
@@ -322,6 +301,7 @@ const Cargue = ({ userId }) => {
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,

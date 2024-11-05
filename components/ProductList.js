@@ -49,8 +49,8 @@ const orderOfProducts = [
 
 const getUrlByDay = (selectedDay, userId) => {
   const urls = {
-    Lunes: `https://script.google.com/macros/s/AKfycbxoHBuRMK02TlZH5u9WMlA2v6PoQ30P8dWBBGNNdGr5LQOT7F4Kxn-4v80gvcf1Dedf/exec?userId=${userId}`,
-    Martes: `https://example.com/martes?userId=${userId}`,
+    Lunes: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec?userId=${userId}`,
+    Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=${userId}`,
     Miércoles: `https://example.com/miercoles?userId=${userId}`,
     Jueves: `https://example.com/jueves?userId=${userId}`,
     Viernes: `https://example.com/viernes?userId=${userId}`,

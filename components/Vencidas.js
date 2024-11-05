@@ -45,8 +45,8 @@ const orderOfProducts = [
 
 // Mapeo de días a URLs
 const urlsByDay = {
-  Lunes: `https://script.google.com/macros/s/AKfycbxoHBuRMK02TlZH5u9WMlA2v6PoQ30P8dWBBGNNdGr5LQOT7F4Kxn-4v80gvcf1Dedf/exec?userId=`,
-  Martes: `https://script.google.com/macros/s/OTRAlkxvHyA0KjWIXxxx/exec?userId=`, // Cambia la URL según tus necesidades
+  Lunes: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec/exec?userId=`,
+  Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=`, // Cambia la URL según tus necesidades
   Miércoles: `https://script.google.com/macros/s/xyz123/exec?userId=`, // Cambia la URL
   Jueves: `https://script.google.com/macros/s/abc456/exec?userId=`, // Cambia la URL
   Viernes: `https://script.google.com/macros/s/def789/exec?userId=`, // Cambia la URL
