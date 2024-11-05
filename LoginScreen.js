@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, Button, StyleSheet, Alert, ImageBackground } from 'react-native';
+import { View, TextInput, Button, StyleSheet, Alert, ImageBackground,  StatusBar } from 'react-native';
 
 const LoginScreen = ({ onLogin }) => {
   const [username, setUsername] = useState('');
@@ -36,6 +36,7 @@ const LoginScreen = ({ onLogin }) => {
 
   return (
     <ImageBackground source={require('./images/banner.png')} style={styles.background}>
+      <StatusBar hidden={true} /> 
       <View style={styles.container}>
         <TextInput
           style={styles.input}

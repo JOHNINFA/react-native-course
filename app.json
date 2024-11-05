@@ -10,7 +10,6 @@
       "image": "./assets/icono.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
-      
     },
     "ios": {
       "supportsTablet": true

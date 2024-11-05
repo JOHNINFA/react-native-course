@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, TouchableOpacity, StyleSheet, BackHandler, Alert } from 'react-native';
+import { View, Text, TouchableOpacity, StyleSheet, BackHandler, Alert, StatusBar, ImageBackground } from 'react-native';
 import CloudDownloadIcon from '../assets/cloud-download-outline.svg';
 import CloudUploadIcon from '../assets/cloud-upload-outline.svg';
 import Rendimiento from '../assets/newspaper-outline.svg';
@@ -42,7 +42,12 @@ const OptionsScreen = ({ navigation, userId }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ImageBackground 
+      source={require('../assets/banner2.png')} // Cambia la ruta a tu imagen
+      style={styles.container} // Utiliza el mismo estilo que tenías en tu contenedor
+      resizeMode="cover" // Puedes ajustar esto a 'contain' si prefieres
+    >
+      <StatusBar hidden={true} /> 
       {/* Botón "Salir" en la parte superior izquierda */}
       <TouchableOpacity
         style={[
@@ -59,64 +64,59 @@ const OptionsScreen = ({ navigation, userId }) => {
             isPressed ? styles.logoutTextPressed : styles.logoutTextDefault,
           ]}
         >
-          Salir
+          SALIR
         </Text>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.option} onPress={handleCarguePress}>
         <View style={[styles.iconWithText, { paddingRight: 14.5 }]}>
-          <CloudDownloadIcon width={24} height={24}  color="white" fill="white"   style={styles.icon} />
+          <CloudDownloadIcon width={24} height={24} color="white" fill="white" style={styles.icon} />
           <Text style={styles.optionText}>Cargue</Text>
         </View>
       </TouchableOpacity>
 
-
       <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Main')}>
         <View style={styles.iconWithText}>
-          {/* Ícono de subida para el botón Sugerido */}
-          < CloudUploadIcon width={24} height={24}  color="white"  fill="white" style={styles.icon} />
+          <CloudUploadIcon width={24} height={24} color="white" fill="white" style={styles.icon} />
           <Text style={styles.optionText}>Sugerido</Text>
         </View>
       </TouchableOpacity>
 
       <TouchableOpacity style={styles.option} onPress={() => handleOptionPress('Vencidas')}>
         <View style={styles.iconWithText}>
-          {/* Ícono de periódico para el botón Rendimiento */}
-          < Rendimiento width={24} height={24}  color="white" fill="white" style={styles.icon} />
+          <Rendimiento width={24} height={24} color="white" fill="white" style={styles.icon} />
           <Text style={styles.optionText}>Rendimiento</Text>
         </View>
       </TouchableOpacity>
-    </View>
+    </ImageBackground>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f5f5f5', // Color de fondo del contenedor
   },
   logoutButton: {
     position: 'absolute', // Posicionamiento absoluto
     top: 40, // Distancia desde la parte superior
     left: 20, // Distancia desde la izquierda
     padding: 10,
-    borderRadius: 5,
-    backgroundColor: '#f5f5f5', // Color de fondo inicial (mismo que el contenedor)
+    borderRadius: 9,
+    // Eliminar el fondo
   },
   logoutButtonDefault: {
-    backgroundColor: '#f5f5f5', // Color de fondo por defecto
+    // backgroundColor: '#f5f5f5', // Eliminar color de fondo por defecto
   },
   logoutButtonPressed: {
-    backgroundColor: '#00ad53', // Color de fondo al presionar
+    // backgroundColor: '#00ad53', // Eliminar color de fondo al presionar
   },
   logoutText: {
     fontSize: 16,
     fontWeight: 'bold',
   },
   logoutTextDefault: {
-    color: '#00ad53', // Color de texto inicial
+    color: '#003d88', // Color de texto inicial
   },
   logoutTextPressed: {
     color: 'white', // Color de texto al presionar

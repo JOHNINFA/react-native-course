@@ -162,8 +162,7 @@ const Cargue = ({ userId }) => {
       product,
       checked: item.V
     }));
-    console.log('Datos a enviar a la URL POST:', dataToSend); // Verifica el formato y contenido de dataToSend
-  console.log('URL de destino:', dayUrls[selectedDay].POST); // Confirma la URL de POST que se está usando
+  
 
     try {
       const response = await fetch(dayUrls[selectedDay].POST, {
@@ -273,11 +272,12 @@ const Cargue = ({ userId }) => {
         </ScrollView>
       </View>
       <View style={styles.titleContainer}>
-        <Text style={[styles.title, styles.titleCheckbox]}>V</Text>
-        <Text style={[styles.title, styles.titleCheckbox]}>D</Text>
-        <Text style={[styles.title, styles.titleQuantity]}>C</Text>
-        <Text style={styles.title}>P</Text>
-        </View>
+      <Text style={[styles.title, styles.titleCheckbox, styles.titleV]}>V</Text>
+      <Text style={[styles.title, styles.titleCheckbox, styles.titleD]}>D</Text>
+      <Text style={[styles.title, styles.titleQuantity, styles.titleC]}>Cantidad</Text>
+     <Text style={[styles.title, styles.titledescripcion, styles.titleP]}>Producto</Text>
+   </View>
+
       {loading ? (
         <ActivityIndicator size="large" color="#033468" />
       ) : (
@@ -343,8 +343,8 @@ const styles = StyleSheet.create({
     color: 'black',
   },
   titleContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
+    flexDirection: 'row', // Asegúrate de que los elementos estén en fila
+    alignItems: 'center', // Alinea los elementos verticalmente en el centro
     backgroundColor: '#003d88',
     borderRadius: 10,
     paddingHorizontal: 10,
@@ -352,6 +352,33 @@ const styles = StyleSheet.create({
     marginTop: -10,
     marginBottom: 10,
   },
+  title: {
+    // Otros estilos generales para el texto
+    fontSize: 16,
+  },
+  titleCheckbox: {
+    flex: 0.5,
+    paddingLeft: 0,
+    paddingRight: 0,
+  },
+  titleV: {
+    marginLeft:2,
+    marginRight: -4, // Ajusta este valor para mover "V" hacia la derecha
+  },
+  titleD: {
+    marginRight: -11, // Ajusta este valor para mover "D" un poco hacia la derecha
+  },
+  titleC: {
+    marginRight: 29, // Ajusta este valor para mover "C" hacia la izquierda
+  },
+
+  titleP: {
+    marginRight: 60, // Ajusta este valor para mover "C" hacia la izquierda
+  },
+  titleQuantity: {
+    // Otros estilos específicos para la cantidad si es necesario
+  },
+
   title: {
     fontSize: 14,
     fontWeight: 'bold',

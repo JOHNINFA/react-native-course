@@ -23,7 +23,7 @@ const productos = [
     { name: "AREPA CHORICERA", image: require('../images/arepa-choricera.jpeg')  },
     { name: "AREPA LONCHERIA", image: require('../images/arepa-loncheria.jpeg')  },
     { name: "AREPA CON MARGARINA Y SAL", image: require('../images/arepa-margarina-sal.jpeg')  },
-    { name: "YUCAREPA", image: '' },
+    { name: "YUCAREPA", image: require('../images/yucarepa.png') },
     { name: "AREPA TIPO ASADERO X 10", image: require('../images/arepa-asadero.jpeg')  },
     { name: "AREPA PARA RELLENAR # 1", image: require('../images/arepa-rellenar-1-2.jpeg')  },
     { name: "AREPA PARA RELLENAR #2", image: require('../images/arepa-rellenar-1-2.jpeg')  },

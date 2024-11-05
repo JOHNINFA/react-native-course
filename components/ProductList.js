@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
-import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator, View } from 'react-native';
+import { ScrollView, TouchableOpacity, Text, StyleSheet, Alert, ActivityIndicator, View, TextInput} from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import Product from './Product';
-import productos from './Productos';
-
+import productos from './Productos'
 
 
 const orderOfProducts = [
@@ -64,6 +63,7 @@ const ProductList = ({ selectedDay, userId }) => {
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const [searchText, setSearchText] = useState('');
 
   const handleQuantityChange = (productName, quantity) => {
     setQuantities((prevQuantities) => ({
@@ -71,6 +71,10 @@ const ProductList = ({ selectedDay, userId }) => {
       [productName]: quantity,
     }));
   };
+  
+  const filteredProducts = orderOfProducts.filter(productName =>
+    productName.toLowerCase().includes(searchText.toLowerCase())
+  );
 
   const handleSendPress = () => {
     if (!loading && selectedDay) {
@@ -129,7 +133,7 @@ const ProductList = ({ selectedDay, userId }) => {
       setLoading(false);
     }
   };
-
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       {!selectedDay && (
@@ -144,6 +148,7 @@ const ProductList = ({ selectedDay, userId }) => {
           editable={!!selectedDay}
         />
       ))}
+       
 
       <TouchableOpacity
         onPress={handleSendPress}
