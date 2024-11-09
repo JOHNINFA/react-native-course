@@ -23,23 +23,6 @@ const OptionsScreen = ({ navigation, userId }) => {
     }
   };
 
-  const handleLogout = () => {
-    Alert.alert(
-      "Confirmar Salida",
-      "¿Estás seguro de que deseas salir de la aplicación?",
-      [
-        {
-          text: "Cancelar",
-          onPress: () => console.log("Salida cancelada"),
-          style: "cancel"
-        },
-        { 
-          text: "Salir", 
-          onPress: () => BackHandler.exitApp() // Cierra la aplicación si se confirma
-        }
-      ]
-    );
-  };
 
   return (
     <ImageBackground 
@@ -49,24 +32,8 @@ const OptionsScreen = ({ navigation, userId }) => {
     >
       <StatusBar hidden={true} /> 
       {/* Botón "Salir" en la parte superior izquierda */}
-      <TouchableOpacity
-        style={[
-          styles.logoutButton,
-          isPressed ? styles.logoutButtonPressed : styles.logoutButtonDefault,
-        ]}
-        onPressIn={() => setIsPressed(true)} // Cambia el estado al presionar
-        onPressOut={() => setIsPressed(false)} // Cambia el estado al soltar
-        onPress={handleLogout} // Maneja la acción de salir
-      >
-        <Text
-          style={[
-            styles.logoutText,
-            isPressed ? styles.logoutTextPressed : styles.logoutTextDefault,
-          ]}
-        >
-          SALIR
-        </Text>
-      </TouchableOpacity>
+
+     
 
       <TouchableOpacity style={styles.option} onPress={handleCarguePress}>
         <View style={[styles.iconWithText, { paddingRight: 14.5 }]}>
@@ -97,30 +64,7 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  logoutButton: {
-    position: 'absolute', // Posicionamiento absoluto
-    top: 40, // Distancia desde la parte superior
-    left: 20, // Distancia desde la izquierda
-    padding: 10,
-    borderRadius: 9,
-    // Eliminar el fondo
-  },
-  logoutButtonDefault: {
-    // backgroundColor: '#f5f5f5', // Eliminar color de fondo por defecto
-  },
-  logoutButtonPressed: {
-    // backgroundColor: '#00ad53', // Eliminar color de fondo al presionar
-  },
-  logoutText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  logoutTextDefault: {
-    color: '#003d88', // Color de texto inicial
-  },
-  logoutTextPressed: {
-    color: 'white', // Color de texto al presionar
-  },
+  
   option: {
     backgroundColor: '#00ad53',
     padding: 20,
