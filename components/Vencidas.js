@@ -37,15 +37,17 @@ const orderOfProducts = [
   "PORCION DE AREPAS X 4 UND",
   "PORCION DE AREPAS X 5 UND",
   "AREPA SUPER OBLEA",
+  "BLOQUE DE MASA",
   "LIBRAS DE MASA",
   "MUTE BOYACENSE",
   "LIBRA DE MAIZ PETO",
-  "ENVUELTO DE MAIZ X 5 UND"
+  "ENVUELTO DE MAIZ X 5 UND",
+  "CANASTAS"
 ];
 
 // Mapeo de días a URLs
 const urlsByDay = {
-  Lunes: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec/exec?userId=`,
+  Lunes: `https://script.google.com/macros/s/AKfycbxBb4F_0qYTKv68bS2aBee5gppmfO56ojmuYohPwsn49b0ZmZQ4XFRCL7kV0b6hchQ/exec?userId=`,
   Martes: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=`, 
   Miércoles: `https://script.google.com/macros/s/AKfycbzOzY7ShAxaWZ1zQTYCAVxU2GfiMvnpEDaAMQmMdVDqo_UKqCNERpy4YPyXsqRVsC4/exec?userId=`, 
   Jueves: `https://script.google.com/macros/s/AKfycbxAxFfQzZCxxHJ0clpS3Lzym3hFIAJ4IegV7Es_fLDZ2Z5yHPkvA7cAz3wsWURvApQV/exec?userId=`, 

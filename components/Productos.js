@@ -33,10 +33,12 @@ const productos = [
     { name: "PORCION DE AREPAS X 4 UND", image: require('../images/arepa-porcionx4.jpeg')  },
     { name: "PORCION DE AREPAS X 5 UND", image: require('../images/arepa-porcionx4.jpeg')  },
     { name: "AREPA SUPER OBLEA", image: require('../images/arepa-superoblea.jpeg')  },
+    { name: "BLOQUE DE MASA", image: require('../images/masa.jpeg')  },
     { name: "LIBRAS DE MASA", image: require('../images/masa.jpeg')  },
     { name: "MUTE BOYACENSE", image: require('../images/maiz-peto.jpeg') },
     { name: "LIBRA DE MAIZ PETO", image: require('../images/maiz-peto.jpeg')  },
     { name: "ENVUELTO DE MAIZ X 5 UND", image: require('../images/envueltos.jpeg')  },
+    { name: "CANASTAS", image: require('../images/canasta.png')  },
   ];
   
   export default productos;

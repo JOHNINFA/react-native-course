@@ -14,8 +14,8 @@ const Cargue = ({ userId }) => {
 
   const dayUrls = {
     Lunes: {
-      GET: `https://script.google.com/macros/s/AKfycbzG6JaJl2hhHsuXmRd8O_gl5dIXcWUnYw5go2TGxmGkxm5TxF-ghL7CYKsT1Vqwuayk/exec?userId=${userId}`,
-      POST: `https://script.google.com/macros/s/AKfycbzW2s4XcpXhBneFTb_LgtJuVmPjJhdlDFDdjugqz6JE2jx8sBR3V1pUWibXGM1k1KSd/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbxBb4F_0qYTKv68bS2aBee5gppmfO56ojmuYohPwsn49b0ZmZQ4XFRCL7kV0b6hchQ/exec?userId=${userId}`,
+      POST: `https://script.google.com/macros/s/AKfycbzy8QjFAkmrNx4nePAOiTeNdVmiE2TWPqoG40yghOTwR3AvX72YDSMwisNk52uP5Zbp/exec?userId=${userId}`,
     },
     Martes: {
       GET: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=${userId}`,
@@ -77,10 +77,12 @@ const Cargue = ({ userId }) => {
     "PORCION DE AREPAS X 4 UND",
     "PORCION DE AREPAS X 5 UND",
     "AREPA SUPER OBLEA",
+    "BLOQUE DE MASA",
     "LIBRAS DE MASA",
     "MUTE BOYACENSE",
     "LIBRA DE MAIZ PETO",
-    "ENVUELTO DE MAIZ X 5 UND"
+    "ENVUELTO DE MAIZ X 5 UND",
+    "CANASTAS"
   ];
 
  

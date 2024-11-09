@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "fabrica",
-    "slug": "fabrica",
+    "name": "AG",
+    "slug": "AG",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "assets/icono.png",
@@ -33,7 +33,7 @@
     },
     "extra": {
       "eas": {
-        "projectId": "c6fb7372-385f-4d9e-b151-cda8d6bd0817"
+        "projectId": "125ff7fd-2f44-416d-93c7-cfcdaad3f9c6"
       }
     }
   }
