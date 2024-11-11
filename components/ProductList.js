@@ -65,7 +65,7 @@ const ProductList = ({ selectedDay, userId }) => {
   const [loading, setLoading] = useState(false);
   const [date, setDate] = useState(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
-  const [searchText, setSearchText] = useState('');
+ 
 
   const handleQuantityChange = (productName, quantity) => {
     setQuantities((prevQuantities) => ({
@@ -74,9 +74,7 @@ const ProductList = ({ selectedDay, userId }) => {
     }));
   };
   
-  const filteredProducts = orderOfProducts.filter(productName =>
-    productName.toLowerCase().includes(searchText.toLowerCase())
-  );
+ 
 
   const handleSendPress = () => {
     if (!loading && selectedDay) {
