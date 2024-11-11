@@ -14,27 +14,27 @@ const Cargue = ({ userId }) => {
 
   const dayUrls = {
     Lunes: {
-      GET: `https://script.google.com/macros/s/AKfycbxBb4F_0qYTKv68bS2aBee5gppmfO56ojmuYohPwsn49b0ZmZQ4XFRCL7kV0b6hchQ/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbwadFyKaLcxopk-wwZUso66qjyB0x8USwsML7wDHi-4c9izm3WxUcvjzB3HvPi4npo/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbzy8QjFAkmrNx4nePAOiTeNdVmiE2TWPqoG40yghOTwR3AvX72YDSMwisNk52uP5Zbp/exec?userId=${userId}`,
     },
     Martes: {
-      GET: `https://script.google.com/macros/s/AKfycbzzqdDnqwknS2bK7xqGvxcP0YMzsALe59aafbIg5KOaB5A5ur-6MgcnWCoyCWZ1CHkO/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbzOxY9DkMLiVHui-kJDNRYZLmSJ_mAtLxzgTWfJnlvvt3IEdK6o2RkqqacG2GgqaI7G/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbz2lYszS5rFbxePsdyCo5iEWyiuiJN9UJBeWDLiSzvzVuCnjU8lBkMao49Vw79WSQc/exec?userId=${userId}`,
     },
     Miércoles: {
-      GET: `https://script.google.com/macros/s/AKfycbzOzY7ShAxaWZ1zQTYCAVxU2GfiMvnpEDaAMQmMdVDqo_UKqCNERpy4YPyXsqRVsC4/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbz0oBHhnPrl2HJjQX8LPMuQ653QQJtORAT45wcckHYBKqDArHvb-p_f1EBCHO33BA/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbwqrnajtsm5P1NxOu90u6huxvw1BDhfkc1iGXUvvYzmiPoVnE6pM-L_DKNT6pa4GLDr/exec?userId=${userId}`,
     },
     Jueves: {
-      GET: `https://script.google.com/macros/s/AKfycbxAxFfQzZCxxHJ0clpS3Lzym3hFIAJ4IegV7Es_fLDZ2Z5yHPkvA7cAz3wsWURvApQV/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbwdmsDhEVO1ucl2v672zuFGa6QcBc3FuO1qCBtpeEvWayLdnVjyCqf-RUSrtRBA-w5k/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbzE5sCtzpNuUkLnJ7MXqI4VHTf_IYZty276GHu8kAo56z1JzPvC8ujXaOroZzcxUww/exec?userId=${userId}`,
     },
     Viernes: {
-      GET: `https://script.google.com/macros/s/AKfycbxXpKzH0tuvKHCfrcJKGbXyGS55Ik2K0G4yx3sHNJDOQH6w3jGx-UsRdTV0yKOOxKf9/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbxjq9llmDKx-q8sAoC6-SLc07gZBt92wDUjBk46TX5w0FfcH0-LWkU5dawcPq5SQS6B/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbwMBIXzT769iTet5QDGM_DWTrAV709AdaEY9g607NOt3JK3OWu6XozjZUvOyIRf410/exec?userId=${userId}`,
     },
     Sábado: {
-      GET: `https://script.google.com/macros/s/AKfycby9dmz5U6qssacj3z_ZfeQBrdikY_Ek4kjODCUKK2JcU68pMjagRM2HtzlpFcre5nUY/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbz-F9sz31L2QR-VLwOK2Rl2ofSr-_AOsxduuT_ycSimcezdZgSPSGB3ud0Ehfn_G0A/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbz-7Qyf1c3cZ-HIym_GSlqHW1M3Irvr2zU9Jlm_onnBp9LcHnyFtMWdgR0bjCbgF6Mb/exec?userId=${userId}`,
     },
     
@@ -153,7 +153,7 @@ const Cargue = ({ userId }) => {
     fetchData();
     
     // Establecer intervalo para actualizar datos cada 50 segundos
-    const intervalId = setInterval(fetchData, 50000);
+    const intervalId = setInterval(fetchData, 60000);
   
     return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar o cambiar de día
   }, [userId, selectedDay]); // Añadir dependencia a selectedDay para que se ejecute cada vez que cambies el día

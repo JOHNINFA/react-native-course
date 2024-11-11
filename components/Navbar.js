@@ -8,7 +8,7 @@ const Navbar = ({ selectedDay, onDaySelected }) => {
     <View style={styles.header}>
       <TextInput
         style={styles.input}
-        placeholder="Buscar..."
+        placeholder="Notas..."
         placeholderTextColor="#888"
       />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.daysContainer}>

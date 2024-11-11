@@ -31,7 +31,7 @@ const OptionsScreen = ({ navigation, userId }) => {
       resizeMode="cover" // Puedes ajustar esto a 'contain' si prefieres
     >
       <StatusBar hidden={true} /> 
-      {/* Botón "Salir" en la parte superior izquierda */}
+    
 
      
 
