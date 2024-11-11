@@ -153,7 +153,7 @@ const Cargue = ({ userId }) => {
     fetchData();
     
     // Establecer intervalo para actualizar datos cada 80 segundos
-    const intervalId = setInterval(fetchData, 80000);
+    const intervalId = setInterval(fetchData, 90000);
   
     return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar o cambiar de día
   }, [userId, selectedDay]); // Añadir dependencia a selectedDay para que se ejecute cada vez que cambies el día
