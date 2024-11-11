@@ -51,7 +51,7 @@ const urlsByDay = {
   Martes: `https://script.google.com/macros/s/AKfycbzOxY9DkMLiVHui-kJDNRYZLmSJ_mAtLxzgTWfJnlvvt3IEdK6o2RkqqacG2GgqaI7G/exec?userId=`, 
   Miércoles: `https://script.google.com/macros/s/AKfycbz0oBHhnPrl2HJjQX8LPMuQ653QQJtORAT45wcckHYBKqDArHvb-p_f1EBCHO33BA/exec?userId=`, 
   Jueves: `https://script.google.com/macros/s/AKfycbwdmsDhEVO1ucl2v672zuFGa6QcBc3FuO1qCBtpeEvWayLdnVjyCqf-RUSrtRBA-w5k/exec?userId=`, 
-  Viernes: `https://script.google.com/macros/s/AKfycbxjq9llmDKx-q8sAoC6-SLc07gZBt92wDUjBk46TX5w0FfcH0-LWkU5dawcPq5SQS6B/exec?userId=`, 
+  Viernes: `https://script.google.com/macros/s/AKfycbzUdzf5gFtQACMm3mWkaYJTxnw5IHuRd6FApvub1l5JPqKl67JL1HjujwS4mCgcreFD/exec?userId=`, 
   Sábado: `https://script.google.com/macros/s/AKfycbz-F9sz31L2QR-VLwOK2Rl2ofSr-_AOsxduuT_ycSimcezdZgSPSGB3ud0Ehfn_G0A/exec?userId=`, 
   
 };

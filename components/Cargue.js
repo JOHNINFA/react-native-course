@@ -30,7 +30,7 @@ const Cargue = ({ userId }) => {
       POST: `https://script.google.com/macros/s/AKfycbzE5sCtzpNuUkLnJ7MXqI4VHTf_IYZty276GHu8kAo56z1JzPvC8ujXaOroZzcxUww/exec?userId=${userId}`,
     },
     Viernes: {
-      GET: `https://script.google.com/macros/s/AKfycbxjq9llmDKx-q8sAoC6-SLc07gZBt92wDUjBk46TX5w0FfcH0-LWkU5dawcPq5SQS6B/exec?userId=${userId}`,
+      GET: `https://script.google.com/macros/s/AKfycbzUdzf5gFtQACMm3mWkaYJTxnw5IHuRd6FApvub1l5JPqKl67JL1HjujwS4mCgcreFD/exec?userId=${userId}`,
       POST: `https://script.google.com/macros/s/AKfycbwMBIXzT769iTet5QDGM_DWTrAV709AdaEY9g607NOt3JK3OWu6XozjZUvOyIRf410/exec?userId=${userId}`,
     },
     Sábado: {
@@ -152,8 +152,8 @@ const Cargue = ({ userId }) => {
     // Llamar a fetchData para cargar los datos del día seleccionado
     fetchData();
     
-    // Establecer intervalo para actualizar datos cada 50 segundos
-    const intervalId = setInterval(fetchData, 60000);
+    // Establecer intervalo para actualizar datos cada 80 segundos
+    const intervalId = setInterval(fetchData, 80000);
   
     return () => clearInterval(intervalId); // Limpiar el intervalo al desmontar o cambiar de día
   }, [userId, selectedDay]); // Añadir dependencia a selectedDay para que se ejecute cada vez que cambies el día
@@ -175,10 +175,10 @@ const Cargue = ({ userId }) => {
 
       if (!response.ok) {
         Alert.alert('Error', 'Hubo un problema al enviar los datos.');
-        console.log('Error en la respuesta del servidor:', response.status); 
+        
       }
     } catch (error) {
-      console.error('Error al enviar datos:', error);
+    
       Alert.alert('Error', 'Hubo un problema al enviar los datos.');
     }
   };
